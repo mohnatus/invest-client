@@ -20,7 +20,6 @@ export class PortfolioPosition {
   }
 
   getMarketData() {
-    //fetch(`http://iss.moex.com/iss/securities/${this.ticker}.json?iss.meta=off&iss.only=description`)
     fetch(
       `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${this.ticker.toLowerCase()}.json?iss.meta=off&iss.only=marketdata&marketdata.columns=BOARDID,OFFER,SPREAD,UPDATETIME,TRADINGSTATUS`
     )

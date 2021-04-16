@@ -100,6 +100,7 @@ import { PortfolioPosition } from '../../models/PortfolioPosition';
 import Position from '../Position/index.vue';
 
 export default {
+  props: ['url'],
   components: { Position },
   data() {
     return {
@@ -116,6 +117,7 @@ export default {
     };
   },
   created() {
+    console.log('url', this.url)
     Promise.all([
       this.getComposition(),
       this.getRates().then(() => {
@@ -155,7 +157,7 @@ export default {
       this.sum.EUR = sum.EUR;
     },
     getPortfolio() {
-      return fetch('http://localhost:3000/portfolio')
+      return fetch(`${this.url}/portfolio`)
         .then((res) => res.json())
         .then((json) => {
           this.positions = json.portfolio.positions
@@ -164,7 +166,7 @@ export default {
         });
     },
     getComposition() {
-      return fetch('http://localhost:3000/composition')
+      return fetch(`${this.url}/composition`)
         .then((res) => res.json())
         .then((json) => {
           this.composition = json.reduce((acc, item) => {
