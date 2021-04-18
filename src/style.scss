@@ -11,3 +11,28 @@ html {
 body {
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
 }
+
+.currency {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--eur {
+    background-color: blue;
+    color: white;
+  }
+
+  &--usd {
+    background-color: green;
+    color: white;
+  }
+
+  &--rub {
+    background-color: goldenrod;
+    color: white;
+  }
+}
