@@ -5,26 +5,28 @@
     }"
   >
     <td>
-      <span
-        class="currency currency--rub"
-        title="Российский рубль"
-        v-if="position.currency == 'RUB'"
-        >₽</span
-      >
-      <span
-        class="currency currency--eur"
-        title="Евро"
-        v-else-if="position.currency == 'EUR'"
-        >€</span
-      >
-      <span
-        class="currency currency--usd"
-        title="Доллар США"
-        v-else-if="position.currency == 'USD'"
-        >$</span
-      >
+      <div class="ticker">
+        <span
+          class="currency currency--rub"
+          title="Российский рубль"
+          v-if="position.currency == 'RUB'"
+          >₽</span
+        >
+        <span
+          class="currency currency--eur"
+          title="Евро"
+          v-else-if="position.currency == 'EUR'"
+          >€</span
+        >
+        <span
+          class="currency currency--usd"
+          title="Доллар США"
+          v-else-if="position.currency == 'USD'"
+          >$</span
+        >
+        <b>{{ position.ticker }}</b>
+      </div>
     </td>
-    <td><b>{{ position.ticker }}</b></td>
 
     <td align="right">{{ position.balance }}</td>
     <td align="right">{{ position.averagePositionPrice.toFixed(3) }}</td>
@@ -35,21 +37,40 @@
       <span class="yield" v-else>0</span>
 
       </td>
+      <td align="right">{{ position.currentPrice }}</td>
     <td align="right">{{ percent }}%</td>
     <td align="right">{{ countedCount }}</td>
     <td align="right">{{ diffCount }}</td>
+
     <td align="right">{{ diffPrice ? diffPrice.toFixed(2) : '-' }}</td>
   </tr>
 </template>
 
 <style lang="scss" scoped>
 .no-composition {
-  opacity: 0.3;
-  background: #ccc;
+
+  background: #eee!important;
+  color: #888!important;
+  td {
+    background: #eee!important;
+    &:not(:first-child) {
+      opacity: 0.5;
+    }
+    &:first-child {
+      z-index: 1;
+    }
+  }
 }
 td {
   padding: 5px 15px;
   border-bottom: 1px solid #ccc;
+}
+.ticker {
+  display: flex;
+  align-items: center;
+  .currency {
+    margin-right: 12px;
+  }
 }
 .currency {
   display: flex;
@@ -94,10 +115,12 @@ export default {
   props: ['position', 'percent', 'total'],
   computed: {
     countedCount() {
+      console.log('counter', this.total, this.percent, this.position.currentPrice)
       let countedSum = (this.total * this.percent) / 100;
       return Math.floor(countedSum / this.position.currentPrice);
     },
     diffCount() {
+      console.log('diff', this.countedCount, this.position.balance)
       return Math.floor(this.countedCount - this.position.balance);
     },
     diffPrice() {
