@@ -1,5 +1,7 @@
 export class PortfolioPosition {
-  constructor(data) {
+  constructor(data, url) {
+    this.url = url;
+
     this.figi = data.figi;
     this.ticker = data.ticker;
     this.balance = data.balance;
@@ -38,5 +40,9 @@ export class PortfolioPosition {
         this.time = res.UPDATETIME;
         this.status = res.TRADINGSTATUS;
       });
+  }
+
+  buy(count) {
+    fetch(`${this.url}/buy?figi=${this.figi}&count=${count}`)
   }
 }

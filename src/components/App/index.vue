@@ -19,6 +19,21 @@
           </div>
         </div>
         <div class="info-block rates">
+          <h2>На счете</h2>
+          <div class="info-item">
+            <span class="currency currency--rub">₽</span>
+            {{ balance.RUB }}
+          </div>
+          <div class="info-item">
+            <span class="currency currency--usd">$</span>
+            {{ balance.USD }}
+          </div>
+          <div class="info-item">
+            <span class="currency currency--eur">€</span>
+            {{ balance.EUR }}
+          </div>
+        </div>
+        <div class="info-block rates">
           <h2>Курсы</h2>
           <div class="info-item">
             <span class="currency currency--usd">$</span>
@@ -188,6 +203,11 @@ export default {
     return {
       accountTotal: 0,
       total: 0,
+      balance: {
+        USD: 0,
+        EUR: 0,
+        RUB: 0,
+      },
       loading: true,
       eur: 0,
       usd: 0,
@@ -201,6 +221,8 @@ export default {
     };
   },
   created() {
+    this.getBalance();
+
     Promise.all([
       this.getComposition(),
       this.getRates().then(() => {
@@ -243,7 +265,7 @@ export default {
         .then((json) => {
           this.positions = json.portfolio.positions
             .filter((p) => p.instrumentType == "Etf")
-            .map((p) => new PortfolioPosition(p));
+            .map((p) => new PortfolioPosition(p, this.url));
 
           let total = this.positions.reduce((total, position) => {
             let sum = this.getRUB(position.sum, position.currency);
@@ -261,6 +283,16 @@ export default {
             acc[item.ticker] = item.percent;
             return acc;
           }, {});
+        });
+    },
+    getBalance() {
+      return fetch(`${this.url}/balance`)
+        .then((res) => res.json())
+        .then((json) => {
+          let currencies = json.balance.currencies;
+          currencies.forEach((c) => {
+            this.balance[c.currency] = c.balance;
+          });
         });
     },
     getRates() {
