@@ -15,7 +15,7 @@
             v-for="etf in sortedEtfs"
             :key="etf.ticker"
             :class="{
-              inactive: !etf.active,
+              inactive: !etf.active
             }"
           >
             <td>
@@ -40,44 +40,235 @@
     </div>
     <div>
       <div class="groups">
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th v-for="type in types" :key="type.id">{{ type.name }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="market in markets" :key="market.id">
-              <th>{{ market.name }}</th>
-              <td v-for="type in types" :key="type.id">
-                <div class="tickers-list">
-                  <Ticker
-                    v-for="etf in getGroup(type.id, market.id)"
-                    :key="etf.ticker"
-                    :etf="etf"
-                  >
-                    {{ etf.ticker }}
-                  </Ticker>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th>Золото</th>
-              <td :colspan="types.length">
-                <div class="tickers-list">
-                  <Ticker
-                    v-for="etf in getGroup('gold')"
-                    :key="etf.ticker"
-                    :etf="etf"
-                  >
-                    {{ etf.ticker }}
-                  </Ticker>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <section class="group">
+          <div class="group-header">
+            <div class="group-percent">
+              <input type="number" v-model="groups.mixed" />
+            </div>
+            <h2 class="group-name">Смешанные активы</h2>
+          </div>
+
+          <div class="group-content">
+            <div class="tickers-list">
+              <Ticker
+                v-for="etf in getGroup('mixed')"
+                :key="etf.ticker"
+                :etf="etf"
+              >
+                {{ etf.ticker }}
+              </Ticker>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-header">
+            <div class="group-percent">
+              <input type="number" v-model="groups.stocks" />
+            </div>
+            <h2 class="group-name">Акции</h2>
+          </div>
+
+          <div class="group-content">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Глобальный<br />рынок</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.global" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'global')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>США</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.usa" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'usa')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Россия</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.russia" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'russia')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Развитые<br />рынки</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.developed" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'developed')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Развивающиеся<br />рынки</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.developed" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'emerging')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Другое</th>
+                  <td>
+                    <input type="number" v-model="stocksGroups.other" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('stocks', 'other')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td>
+                    {{ stocksSum }}
+                  </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-header">
+            <div class="group-percent">
+              <input type="number" v-model="groups.bonds" />
+            </div>
+            <h2 class="group-name">Облигации</h2>
+          </div>
+
+          <div class="group-content">
+            <table>
+              <tbody>
+                <tr>
+                  <th>США</th>
+                  <td>
+                    <input type="number" v-model="bondsGroups.usa" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('bonds', 'usa')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Россия</th>
+                  <td>
+                    <input type="number" v-model="bondsGroups.russia" />
+                  </td>
+                  <td>
+                    <div class="tickers-list">
+                      <Ticker
+                        v-for="etf in getGroup('bonds', 'russia')"
+                        :key="etf.ticker"
+                        :etf="etf"
+                      >
+                        {{ etf.ticker }}
+                      </Ticker>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td>
+                    {{ bondsSum }}
+                  </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-header">
+            <div class="group-percent">
+              <input type="number" v-model="groups.gold" />
+            </div>
+            <h2 class="group-name">Золото/серебро</h2>
+          </div>
+
+          <div class="group-content">
+            <div class="tickers-list">
+              <Ticker
+                v-for="etf in getGroup('gold')"
+                :key="etf.ticker"
+                :etf="etf"
+              >
+                {{ etf.ticker }}
+              </Ticker>
+            </div>
+          </div>
+        </section>
+
+        <div class="groups-footer">
+          <div class="groups-total">
+            {{ groupsSum }}
+          </div>
+        </div>
       </div>
 
       <div class="charts">
@@ -124,62 +315,87 @@
     min-width: 400px;
   }
 }
+.group {
+  margin-bottom: 20px;
+  &-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  &-percent {
+    width: 60px;
+    margin-right: 20px;
+    input {
+      width: 100%;
+    }
+  }
+  &-content {
+    padding-left: 80px;
+  }
+}
+.groups-footer {
+  margin-bottom: 24px;
+}
 </style>
 
 <script>
-import { etfs } from "./etfs";
-import { ETF } from "./etf";
-import Ticker from "./ticker.vue";
-import { Chart } from "highcharts-vue";
+import { etfs } from './etfs';
+import { ETF } from './etf';
+import Ticker from './ticker.vue';
+import { Chart } from 'highcharts-vue';
+import { url } from '../../config/api';
 
 const etfsList = etfs.map((e) => new ETF(e));
-export const currencies = [
+
+const currencies = [
   {
-    id: "RUB",
+    id: 'RUB'
   },
   {
-    id: "USD",
+    id: 'USD'
   },
   {
-    id: "EUR",
-  },
+    id: 'EUR'
+  }
 ];
 
-export const types = [
-  { id: "mixed", name: "Смеш." },
-  { id: "stocks", name: "Акции" },
-  { id: "bonds", name: "Облигации" },
+const types = [
+  { id: 'stocks', name: 'Акции' },
+  { id: 'bonds', name: 'Облигации' },
+  { id: 'mixed', name: 'Смешанные активы' },
+  { id: 'gold', name: 'Золото' },
 ];
 
-export const markets = [
-  { id: "global", name: "Глобальный рынок" },
-  { id: "usa", name: "США" },
-  { id: "developed", name: "Развитые" },
-  { id: "russia", name: "Россия" },
-  { id: "emerging", name: "Развивающиеся" },
+const markets = [
+  { id: 'global', name: 'Глобальный рынок' },
+  { id: 'usa', name: 'США' },
+  { id: 'developed', name: 'Развитые' },
+  { id: 'russia', name: 'Россия' },
+  { id: 'emerging', name: 'Развивающиеся' },
+  { id: 'other', name: 'Другое' },
 ];
 
 function PieChart(config) {
   return {
-    chart: { type: "pie" },
+    chart: { type: 'pie' },
     title: {
-      text: config.title,
+      text: config.title
     },
     plotOptions: {
       pie: {
-        size: 200,
-      },
+        size: 200
+      }
     },
 
     credits: {
-      enabled: false,
+      enabled: false
     },
     tooltip: {
-      formatter: function () {
+      formatter: function() {
         return `${this.key}: ${this.y}%`;
-      },
+      }
     },
-    series: config.series,
+    series: config.series
   };
 }
 
@@ -188,32 +404,59 @@ export default {
   data() {
     return {
       etfs: etfsList,
+      groups: {
+        stocks: 70,
+        bonds: 20,
+        gold: 5,
+        mixed: 5
+      },
+      bondsGroups: {
+        usa: 50,
+        russia: 50
+      },
+      stocksGroups: {
+        global: 5,
+        usa: 20,
+        developed: 20,
+        russia: 20,
+        emerging: 20,
+        other: 20
+      },
       types,
       markets,
       chartOptions: {
         chart: {
-          type: "pie",
+          type: 'pie'
         },
         series: [
           {
-            name: "hello",
+            name: 'hello',
             data: [
               {
-                name: "dsf",
-                y: 100,
-              },
-            ],
-          },
-        ],
-      },
+                name: 'dsf',
+                y: 100
+              }
+            ]
+          }
+        ]
+      }
     };
   },
-
+  created() {
+    fetch(`${url}/etfs`)
+      .then((response) => response.json())
+      .then((json) => {
+        let etfs = json.etfs.instruments.filter(({ ticker }) => {
+          return !this.etfs.some((e) => e.ticker == ticker);
+        });
+        console.log('Не описанные ETF', etfs);
+      });
+  },
   computed: {
     sortedEtfs() {
       return [
         ...this.etfs.filter((e) => e.active),
-        ...this.etfs.filter((e) => !e.active),
+        ...this.etfs.filter((e) => !e.active)
       ];
     },
 
@@ -234,26 +477,26 @@ export default {
         });
 
       return PieChart({
-        title: "Тип активов",
+        title: 'Тип активов',
         series: [
           {
-            name: "",
+            name: '',
             data: [
               {
-                name: "Акции",
-                y: stockes,
+                name: 'Акции',
+                y: stockes
               },
               {
-                name: "Облигации",
-                y: bonds,
+                name: 'Облигации',
+                y: bonds
               },
               {
-                name: "Золото",
-                y: gold,
-              },
-            ],
-          },
-        ],
+                name: 'Золото',
+                y: gold
+              }
+            ]
+          }
+        ]
       });
     },
 
@@ -265,18 +508,18 @@ export default {
           name: market.name,
           y: activeEtfs
             .filter((etf) => etf.market == market.id)
-            .reduce((total, acc) => total + acc.percent, 0),
+            .reduce((total, acc) => total + acc.percent, 0)
         };
       });
 
       return PieChart({
-        title: "Рынки активов",
+        title: 'Рынки активов',
         series: [
           {
-            name: "",
-            data: data,
-          },
-        ],
+            name: '',
+            data: data
+          }
+        ]
       });
     },
 
@@ -288,39 +531,50 @@ export default {
           name: cur.id,
           y: activeEtfs
             .filter((etf) => etf.currency.toUpperCase() == cur.id)
-            .reduce((total, acc) => total + acc.percent, 0),
+            .reduce((total, acc) => total + acc.percent, 0)
         };
       });
 
       return PieChart({
-        title: "Валюта",
+        title: 'Валюта',
         series: [
           {
-            name: "",
-            data: data,
-          },
-        ],
+            name: '',
+            data: data
+          }
+        ]
       });
     },
 
     total() {
       return this.etfs.reduce((acc, etf) => etf.percent + acc, 0);
     },
+
+    stocksSum() {
+      return Object.values(this.stocksGroups).reduce((acc, v) => acc + parseInt(v), 0)
+    },
+
+    bondsSum() {
+      return Object.values(this.bondsGroups).reduce((acc, v) => acc + parseInt(v), 0)
+    },
+
+    groupsSum() {
+      return Object.values(this.groups).reduce((acc, v) => acc + parseInt(v), 0)
+    }
   },
 
   methods: {
     getGroup(type, market) {
-      let etfs = this.etfs.filter((e) => {
+      let etfs = etfsList.filter((e) => {
         if (e.type !== type) return false;
         if (market && e.market != market) return false;
         return true;
       });
-      console.log("grput", type, market, this.etfs.length, etfs);
       return [
         ...etfs.filter((e) => e.active),
-        ...etfs.filter((e) => !e.active),
+        ...etfs.filter((e) => !e.active)
       ];
-    },
-  },
+    }
+  }
 };
 </script>

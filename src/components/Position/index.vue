@@ -33,7 +33,7 @@
     <td align="right">{{ position.sum.toFixed(2) }}</td>
     <td align="right" >
       <span class="yield yield--success" v-if="position.yield > 0">+{{ position.yield }}</span>
-      <span class="yield yield--danger" v-else-if="position.yield < 0">-{{ position.yield }}</span>
+      <span class="yield yield--danger" v-else-if="position.yield < 0">{{ position.yield }}</span>
       <span class="yield" v-else>0</span>
 
       </td>
