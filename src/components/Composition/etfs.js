@@ -9,8 +9,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { emerging: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'AKEU',
@@ -20,8 +18,6 @@ export const etfs = [
     currency: 'eur',
 		markets: { developed: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 5.25
 	},
 	{
 		ticker: 'AKME',
@@ -30,8 +26,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'AKNX',
@@ -41,8 +35,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'AKSP',
@@ -51,8 +43,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'VTBA',
@@ -61,8 +51,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'VTBE',
@@ -71,8 +59,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { emerging: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 7,
 	},
 	{
 		ticker: 'VTBX',
@@ -81,8 +67,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'DIVD',
@@ -91,8 +75,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'ESGR',
@@ -101,8 +83,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'SBMX',
@@ -111,8 +91,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'SBSP',
@@ -121,8 +99,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'TBIO',
@@ -132,8 +108,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 6.125,
 	},
 	{
 		ticker: 'TECH',
@@ -143,8 +117,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
-    percent: 0,
 	},
 	{
 		ticker: 'TIPO',
@@ -153,8 +125,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 6.125,
 	},
 	{
 		ticker: 'TMOS',
@@ -163,8 +133,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 14,
 	},
 	{
 		ticker: 'TSPX',
@@ -173,8 +141,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 6.125,
 	},
 	{
 		ticker: 'FXCN',
@@ -184,7 +150,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { emerging: 100 },
 		actives: { stocks: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXDE',
@@ -194,7 +159,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { developed: 100 },
 		actives: { stocks: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXDM',
@@ -203,8 +167,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { developed: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 5.25
 	},
 	{
 		ticker: 'FXIM',
@@ -214,8 +176,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 6.125
 	},
 	{
 		ticker: 'FXIT',
@@ -225,7 +185,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXKZ',
@@ -235,8 +194,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { emerging: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 7
 	},
 	{
 		ticker: 'FXRL',
@@ -245,7 +202,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: true,
 	},
 	{
 		ticker: 'FXRW',
@@ -254,7 +210,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { global: 100 },
 		actives: { stocks: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXUS',
@@ -263,7 +218,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { usa: 100 },
 		actives: { stocks: 100 },
-    active: true,
 	},
 	{
 		ticker: 'FXWO',
@@ -272,8 +226,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { global: 100 },
 		actives: { stocks: 100 },
-    active: true,
-    percent: 7
 	},
 	{
 		ticker: 'RUSE',
@@ -282,7 +234,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { stocks: 100 },
-    active: true,
 	},
 	{
 		ticker: 'VTBG',
@@ -291,7 +242,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { gold: 100 },
 		actives: { gold: 100 },
-    active: false,
 	},
 	{
 		ticker: 'TGLD',
@@ -300,7 +250,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { gold: 100 },
 		actives: { gold: 100 },
-    active: true,
 	},
 	{
 		ticker: 'FXGD',
@@ -309,8 +258,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { gold: 100 },
 		actives: { gold: 100 },
-    active: false,
-    percent: 5
 	},
 	{
 		ticker: 'AKMB',
@@ -319,8 +266,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: true,
-    percent: 6
 	},
 	{
 		ticker: 'VTBB',
@@ -329,7 +274,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'VTBH',
@@ -338,8 +282,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { bonds: 100 },
-    active: true,
-    percent: 5
 	},
 	{
 		ticker: 'VTBM',
@@ -348,7 +290,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'VTBU',
@@ -357,7 +298,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'SBCB',
@@ -366,8 +306,6 @@ export const etfs = [
     currency: 'usd',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: true,
-    percent: 5
 	},
 	{
 		ticker: 'SBGB',
@@ -376,7 +314,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'SBRB',
@@ -385,7 +322,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXMM',
@@ -394,8 +330,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: true,
-    percent: 4
 	},
 	{
 		ticker: 'FXRB',
@@ -404,7 +338,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXRU',
@@ -413,7 +346,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'FXTB',
@@ -422,7 +354,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'RUSB',
@@ -431,7 +362,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { russia: 100 },
 		actives: { bonds: 100 },
-    active: false,
 	},
 	{
 		ticker: 'TEUR',
@@ -441,8 +371,6 @@ export const etfs = [
     currency: 'eur',
 		markets: { developed: 100 },
 		actives: { stocks: 25, bonds: 50, gold: 25 },
-    active: true,
-    percent: 5
 	},
 	{
 		ticker: 'TRUR',
@@ -451,7 +379,6 @@ export const etfs = [
     currency: 'rub',
 		markets: { usa: 100 },
 		actives: { stocks: 25, bonds: 50, gold: 25 },
-    active: false,
 	},
 	{
 		ticker: 'TUSD',
@@ -460,6 +387,85 @@ export const etfs = [
     currency: 'usd',
 		markets: { usa: 100 },
 		actives: { stocks: 25, bonds: 50, gold: 25 },
-    active: false,
 	},
+	{
+		ticker: 'AMIN',
+		type: 'stocks',
+		market: 'global',
+		currency: 'usd',
+		markets: { global: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMGM',
+		type: 'stocks',
+		market: 'gold',
+		currency: 'usd',
+		markets: { gold: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMSL',
+		type: 'stocks',
+		market: 'gold',
+		currency: 'usd',
+		markets: { gold: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMEM',
+		type: 'stocks',
+		market: 'emerging',
+		currency: 'usd',
+		markets: { emerging: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMCC',
+		type: 'stocks',
+		market: 'global',
+		currency: 'usd',
+		markets: { global: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMVF',
+		type: 'stocks',
+		market: 'usa',
+		currency: 'usd',
+		markets: { usa: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'TSPV',
+		type: 'stocks',
+		market: 'global',
+		currency: 'usd',
+		markets: { global: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'FXFA',
+		type: 'stocks',
+		market: 'global',
+		currency: 'rub',
+		markets: { global: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMRE',
+		type: 'stocks',
+		market: 'russia',
+		currency: 'rub',
+		markets: { russia: 100 },
+		actives: { stocks: 100 }
+	},
+	{
+		ticker: 'AMSC',
+		type: 'stocks',
+		market: 'usa',
+		currency: 'usd',
+		markets: { usd: 100 },
+		actives: { stocks: 100 }
+	}
 ];

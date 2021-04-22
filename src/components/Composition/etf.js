@@ -12,7 +12,6 @@ export class ETF {
     this.actives = data.actives;
 
     this.active = data.active;
-    this.percent = data.percent || 0;
   }
 
   get currencySymbol() {
@@ -23,11 +22,6 @@ export class ETF {
   }
 
   toggle() {
-    if (this.active) {
-      this.active = false;
-      this.percent = 0;
-    } else {
-      this.active = true;
-    }
+    this.active = !this.active;
   }
 }
