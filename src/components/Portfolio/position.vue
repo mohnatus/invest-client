@@ -4,7 +4,7 @@
       'no-composition': !percent
     }"
   >
-    <td>
+    <td class="name">
       <div class="ticker">
         <span
           class="currency currency--rub"
@@ -28,31 +28,36 @@
       </div>
     </td>
 
-    <td align="right">{{ position.balance }}</td>
-    <td align="right">{{ position.averagePositionPrice.toFixed(3) }}</td>
-    <td align="right">{{ position.sum.toFixed(2) }}</td>
-    <td align="right" >
-      <span class="yield yield--success" v-if="position.yield > 0">+{{ position.yield }}</span>
-      <span class="yield yield--danger" v-else-if="position.yield < 0">{{ position.yield }}</span>
+    <td class="balance" align="right">{{ position.balance }}</td>
+    <td class="balance" align="right">
+      {{ position.averagePositionPrice.toFixed(3) }}
+    </td>
+    <td class="balance" align="right">{{ position.sum.toFixed(2) }}</td>
+    <td class="balance" align="right">
+      <span class="yield yield--success" v-if="position.yield > 0"
+        >+{{ position.yield }}</span
+      >
+      <span class="yield yield--danger" v-else-if="position.yield < 0">{{
+        position.yield
+      }}</span>
       <span class="yield" v-else>0</span>
+    </td>
 
-      </td>
-      <td align="right">{{ position.currentPrice }}</td>
-    <td align="right">{{ percent }}%</td>
-    <td align="right">{{ countedCount }}</td>
-    <td align="right">{{ diffCount }}</td>
+    <td class="count" align="right">{{ position.currentPrice }}</td>
+    <td class="count" align="right">{{ percent }}%</td>
+    <td class="count" align="right">{{ countedCount }}</td>
 
-    <td align="right">{{ diffPrice ? diffPrice.toFixed(2) : '-' }}</td>
+    <td class="buy" align="right">{{ diffCount }}</td>
+    <td class="buy" align="right">{{ diffPrice ? diffPrice.toFixed(2) : '-' }}</td>
   </tr>
 </template>
 
 <style lang="scss" scoped>
 .no-composition {
-
-  background: #eee!important;
-  color: #888!important;
+  background: #eee !important;
+  color: #888 !important;
   td {
-    background: #eee!important;
+    background: #eee !important;
     &:not(:first-child) {
       opacity: 0.5;
     }
@@ -115,12 +120,17 @@ export default {
   props: ['position', 'percent', 'total'],
   computed: {
     countedCount() {
-      console.log('counter', this.total, this.percent, this.position.currentPrice)
+      console.log(
+        'counter',
+        this.total,
+        this.percent,
+        this.position.currentPrice
+      );
       let countedSum = (this.total * this.percent) / 100;
       return Math.floor(countedSum / this.position.currentPrice);
     },
     diffCount() {
-      console.log('diff', this.countedCount, this.position.balance)
+      console.log('diff', this.countedCount, this.position.balance);
       return Math.floor(this.countedCount - this.position.balance);
     },
     diffPrice() {

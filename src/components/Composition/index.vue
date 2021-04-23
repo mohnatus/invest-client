@@ -1,180 +1,175 @@
 <template>
-  <div class="wrapper">
-    <Percents :etfs="etfs" :percents="percents"></Percents>
-
-    <div class="calculation">
-      <div class="groups">
-        <div class="groups-col">
-          <section class="group">
-            <div class="group-header">
-              <div class="group-percent">
-                <input type="number" v-model="groups.stocks" />
+  <div>
+    <div v-if="loading">
+      Loading...
+    </div>
+    <div v-else class="wrapper">
+      <Percents :etfs="etfs" :percents="percents"></Percents>
+      <div class="calculation">
+        <div class="groups">
+          <div class="groups-col">
+            <section class="group">
+              <div class="group-header">
+                <div class="group-percent">
+                  <input type="number" v-model="groups.stocks" />
+                </div>
+                <h2 class="group-name">Акции</h2>
               </div>
-              <h2 class="group-name">Акции</h2>
-            </div>
-
-            <div class="group-content">
-              <Stocks :groups="stocksGroups" :items="items.stocks"></Stocks>
-
-
-
-            </div>
-          </section>
-        </div>
-
-        <div class="groups-col">
-          <section class="group">
-            <div class="group-header">
-              <div class="group-percent">
-                <input type="number" v-model="groups.bonds" />
+              <div class="group-content">
+                <Stocks :groups="stocksGroups" :items="items.stocks"></Stocks>
               </div>
-              <h2 class="group-name">Облигации</h2>
-            </div>
-
-            <div class="group-content">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>США</th>
-                    <td>
-                      <input type="number" v-model="bondsGroups.usa" />
-                    </td>
-                    <td>
-                      <div class="tickers-list">
-                        <Ticker
-                          v-for="etf in items.bonds.usa.filter((i) => i.active)"
-                          :key="etf.ticker"
-                          :etf="etf"
-                        >
-                          {{ etf.ticker }}
-                        </Ticker>
-                        <Ticker
-                          v-for="etf in items.bonds.usa.filter(
-                            (i) => !i.active
-                          )"
-                          :key="etf.ticker"
-                          :etf="etf"
-                        >
-                          {{ etf.ticker }}
-                        </Ticker>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Россия</th>
-                    <td>
-                      <input type="number" v-model="bondsGroups.russia" />
-                    </td>
-                    <td>
-                      <div class="tickers-list">
-                        <Ticker
-                          v-for="etf in items.bonds.russia.filter(
-                            (i) => i.active
-                          )"
-                          :key="etf.ticker"
-                          :etf="etf"
-                        >
-                          {{ etf.ticker }}
-                        </Ticker>
-                        <Ticker
-                          v-for="etf in items.bonds.russia.filter(
-                            (i) => !i.active
-                          )"
-                          :key="etf.ticker"
-                          :etf="etf"
-                        >
-                          {{ etf.ticker }}
-                        </Ticker>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <td>
-                      {{ bondsSum }}
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-          <section class="group">
-            <div class="group-header">
-              <div class="group-percent">
-                <input type="number" v-model="groups.mixed" />
+            </section>
+          </div>
+          <div class="groups-col">
+            <section class="group">
+              <div class="group-header">
+                <div class="group-percent">
+                  <input type="number" v-model="groups.bonds" />
+                </div>
+                <h2 class="group-name">Облигации</h2>
               </div>
-              <h2 class="group-name">Смешанные активы</h2>
-            </div>
-
-            <div class="group-content">
-              <div class="tickers-list">
-                <Ticker
-                  v-for="etf in items.mixed.filter((i) => i.active)"
-                  :key="etf.ticker"
-                  :etf="etf"
-                >
-                  {{ etf.ticker }}
-                </Ticker>
-                <Ticker
-                  v-for="etf in items.mixed.filter((i) => !i.active)"
-                  :key="etf.ticker"
-                  :etf="etf"
-                >
-                  {{ etf.ticker }}
-                </Ticker>
+              <div class="group-content">
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>США</th>
+                      <td>
+                        <input type="number" v-model="bondsGroups.usa" />
+                      </td>
+                      <td>
+                        <div class="tickers-list">
+                          <Ticker
+                            v-for="etf in items.bonds.usa.filter(
+                              (i) => i.active
+                            )"
+                            :key="etf.ticker"
+                            :etf="etf"
+                          >
+                            {{ etf.ticker }}
+                          </Ticker>
+                          <Ticker
+                            v-for="etf in items.bonds.usa.filter(
+                              (i) => !i.active
+                            )"
+                            :key="etf.ticker"
+                            :etf="etf"
+                          >
+                            {{ etf.ticker }}
+                          </Ticker>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Россия</th>
+                      <td>
+                        <input type="number" v-model="bondsGroups.russia" />
+                      </td>
+                      <td>
+                        <div class="tickers-list">
+                          <Ticker
+                            v-for="etf in items.bonds.russia.filter(
+                              (i) => i.active
+                            )"
+                            :key="etf.ticker"
+                            :etf="etf"
+                          >
+                            {{ etf.ticker }}
+                          </Ticker>
+                          <Ticker
+                            v-for="etf in items.bonds.russia.filter(
+                              (i) => !i.active
+                            )"
+                            :key="etf.ticker"
+                            :etf="etf"
+                          >
+                            {{ etf.ticker }}
+                          </Ticker>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th></th>
+                      <td>
+                        {{ bondsSum }}
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div>
-          </section>
-          <section class="group">
-            <div class="group-header">
-              <div class="group-percent">
-                <input type="number" v-model="groups.gold" />
+            </section>
+            <section class="group">
+              <div class="group-header">
+                <div class="group-percent">
+                  <input type="number" v-model="groups.mixed" />
+                </div>
+                <h2 class="group-name">Смешанные активы</h2>
               </div>
-              <h2 class="group-name">Золото/серебро</h2>
-            </div>
-
-            <div class="group-content">
-              <div class="tickers-list">
-                <Ticker
-                  v-for="etf in items.gold.filter((i) => i.active)"
-                  :key="etf.ticker"
-                  :etf="etf"
-                >
-                  {{ etf.ticker }}
-                </Ticker>
-                <Ticker
-                  v-for="etf in items.gold.filter((i) => !i.active)"
-                  :key="etf.ticker"
-                  :etf="etf"
-                >
-                  {{ etf.ticker }}
-                </Ticker>
+              <div class="group-content">
+                <div class="tickers-list">
+                  <Ticker
+                    v-for="etf in items.mixed.filter((i) => i.active)"
+                    :key="etf.ticker"
+                    :etf="etf"
+                  >
+                    {{ etf.ticker }}
+                  </Ticker>
+                  <Ticker
+                    v-for="etf in items.mixed.filter((i) => !i.active)"
+                    :key="etf.ticker"
+                    :etf="etf"
+                  >
+                    {{ etf.ticker }}
+                  </Ticker>
+                </div>
               </div>
+            </section>
+            <section class="group">
+              <div class="group-header">
+                <div class="group-percent">
+                  <input type="number" v-model="groups.gold" />
+                </div>
+                <h2 class="group-name">Золото/серебро</h2>
+              </div>
+              <div class="group-content">
+                <div class="tickers-list">
+                  <Ticker
+                    v-for="etf in items.gold.filter((i) => i.active)"
+                    :key="etf.ticker"
+                    :etf="etf"
+                  >
+                    {{ etf.ticker }}
+                  </Ticker>
+                  <Ticker
+                    v-for="etf in items.gold.filter((i) => !i.active)"
+                    :key="etf.ticker"
+                    :etf="etf"
+                  >
+                    {{ etf.ticker }}
+                  </Ticker>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="groups-footer">
+            <div class="groups-total">
+              {{ groupsSum }}
             </div>
-          </section>
-        </div>
-
-        <div class="groups-footer">
-          <div class="groups-total">
-            {{ groupsSum }}
           </div>
         </div>
-      </div>
-
-      <div>
-        <button type="button" @click="save">Сохранить</button>
-      </div>
-
-      <div class="charts">
-        <div class="chart">
-          <highcharts :options="typesChartOptions"></highcharts>
+        <div>
+          <button type="button" @click="save">Сохранить</button>
         </div>
-        <div class="chart">
-          <highcharts :options="marketsChartOptions"></highcharts>
-        </div>
-        <div class="chart">
-          <highcharts :options="currencyChartOptions"></highcharts>
+        <div class="charts">
+          <div class="chart">
+            <highcharts :options="typesChartOptions"></highcharts>
+          </div>
+          <div class="chart">
+            <highcharts :options="marketsChartOptions"></highcharts>
+          </div>
+          <div class="chart">
+            <highcharts :options="currencyChartOptions"></highcharts>
+          </div>
         </div>
       </div>
     </div>
@@ -237,18 +232,12 @@
 </style>
 
 <script>
-import { etfs } from './etfs';
 import { ETF } from './etf';
 import Ticker from './ticker.vue';
 import Percents from './percents.vue';
 import Stocks from './stocks.vue';
 import { Chart } from 'highcharts-vue';
 import { url } from '../../config/api';
-
-let etfsList = etfs.map((e) => new ETF(e));
-etfsList.sort((a, b) => {
-  return a.ticker < b.ticker ? -1 : 1;
-});
 
 const currencies = [
   {
@@ -276,15 +265,6 @@ const markets = [
   { id: 'russia', name: 'Россия' },
   { id: 'emerging', name: 'Развивающиеся' }
 ];
-
-function getGroup(type, market) {
-  let etfs = etfsList.filter((e) => {
-    if (e.type !== type) return false;
-    if (market && e.market != market) return false;
-    return true;
-  });
-  return [...etfs.filter((e) => e.active), ...etfs.filter((e) => !e.active)];
-}
 
 function PieChart(config) {
   return {
@@ -314,9 +294,11 @@ export default {
   components: { Ticker, highcharts: Chart, Percents, Stocks },
   data() {
     return {
-      etfs: etfsList,
+      loading: true,
+      etfs: [],
 
       active: {},
+      composition: null,
 
       groups: {
         stocks: 0,
@@ -333,24 +315,22 @@ export default {
         usa: 0,
         developed: 0,
         russia: 0,
-        emerging: 0,
-        other: 0
+        emerging: 0
       },
 
       items: {
-        gold: getGroup('gold'),
-        mixed: getGroup('mixed'),
+        gold: 0,
+        mixed: 0,
         bonds: {
-          usa: getGroup('bonds', 'usa'),
-          russia: getGroup('bonds', 'russia')
+          usa: 0,
+          russia: 0
         },
         stocks: {
-          usa: getGroup('stocks', 'usa'),
-          russia: getGroup('stocks', 'russia'),
-          developed: getGroup('stocks', 'developed'),
-          emerging: getGroup('stocks', 'emerging'),
-          global: getGroup('stocks', 'global'),
-          other: getGroup('stocks', 'other')
+          usa: 0,
+          russia: 0,
+          developed: 0,
+          emerging: 0,
+          global: 0
         }
       },
 
@@ -375,43 +355,16 @@ export default {
     };
   },
   created() {
-    let data = localStorage.getItem('portfolio-composition');
+    let getEtfs = this.getEtfs().then((etfs) => {
+      this.etfs = etfs;
+    });
 
-    if (data) {
-      data = JSON.parse(data);
-      if (data.groups) {
-        Object.keys(data.groups).forEach((key) => {
-          this.groups[key] = data.groups[key] || 0;
-        });
-      }
+    let getComposition = this.getComposition().then((composition) => {
+      this.composition = composition;
+    });
 
-      if (data.stocks) {
-        Object.keys(data.stocks).forEach((key) => {
-          this.stocksGroups[key] = data.stocks[key] || 0;
-        });
-      }
+    Promise.all([getEtfs, getComposition]).then(() => this.init());
 
-      if (data.bonds) {
-        Object.keys(data.bonds).forEach((key) => {
-          this.bondsGroups[key] = data.bonds[key] || 0;
-        });
-      }
-
-      if (data.actives) {
-        this.etfs.forEach((e) => {
-          e.active = data.actives[e.ticker];
-        });
-      }
-    }
-
-    fetch(`${url}/etfs`)
-      .then((response) => response.json())
-      .then((json) => {
-        let etfs = json.etfs.instruments.filter(({ ticker }) => {
-          return !this.etfs.some((e) => e.ticker == ticker);
-        });
-        console.log('Не описанные ETF', etfs);
-      });
   },
 
   computed: {
@@ -501,8 +454,6 @@ export default {
       });
     },
 
-  
-
     bondsSum() {
       return Object.values(this.bondsGroups).reduce(
         (acc, v) => acc + parseInt(v),
@@ -518,6 +469,10 @@ export default {
     },
 
     percents() {
+      if (this.loading) {
+        return {};
+      }
+
       let res = {};
 
       (() => {
@@ -525,7 +480,10 @@ export default {
         Object.keys(this.stocksGroups).forEach((key) => {
           let groupPercent = (this.stocksGroups[key] * percent) / 100;
 
+          if (!(key in this.items.stocks)) return;
+
           let items = this.items.stocks[key];
+
           let activeItems = items.filter((i) => i.active);
           let inactiveItems = items.filter((i) => !i.active);
 
@@ -593,8 +551,69 @@ export default {
   },
 
   methods: {
+    getEtfs() {
+      return fetch(`${url}/etfs`, {
+        method: 'GET'
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          let etfsList = json.etfs.map((e) => new ETF(e));
+          etfsList.sort((a, b) => {
+            return a.ticker < b.ticker ? -1 : 1;
+          });
+          return etfsList;
+        });
+    },
+
+    getComposition() {
+      let data = localStorage.getItem('portfolio-composition');
+      return Promise.resolve(data);
+    },
+
+    init() {
+      let data = this.composition;
+      if (data) {
+        data = JSON.parse(data);
+        if (data.groups) {
+          Object.keys(data.groups).forEach((key) => {
+            this.groups[key] = data.groups[key] || 0;
+          });
+        }
+
+        if (data.stocks) {
+          Object.keys(data.stocks).forEach((key) => {
+            this.stocksGroups[key] = data.stocks[key] || 0;
+          });
+        }
+
+        if (data.bonds) {
+          Object.keys(data.bonds).forEach((key) => {
+            this.bondsGroups[key] = data.bonds[key] || 0;
+          });
+        }
+
+        if (data.actives) {
+          this.etfs.forEach((e) => {
+            e.active = data.actives[e.ticker];
+          });
+        }
+      }
+
+      this.items.gold = this.getGroup('gold');
+      this.items.mixed = this.getGroup('mixed');
+      this.items.bonds.usa = this.getGroup('bonds', 'usa');
+      this.items.bonds.russia = this.getGroup('bonds', 'russia');
+      this.items.stocks.usa = this.getGroup('stocks', 'usa');
+      this.items.stocks.russia = this.getGroup('stocks', 'russia');
+      this.items.stocks.developed = this.getGroup('stocks', 'developed');
+      this.items.stocks.emerging = this.getGroup('stocks', 'emerging');
+      this.items.stocks.global = this.getGroup('stocks', 'global');
+
+      this.loading = false;
+    },
+
     getGroup(type, market) {
-      let etfs = etfsList.filter((e) => {
+      let etfs = this.etfs.filter((e) => {
         if (e.type !== type) return false;
         if (market && e.market != market) return false;
         return true;

@@ -11,11 +11,11 @@
           </div>
           <div class="info-item">
             <span class="currency currency--usd">$</span>
-            {{ toRUB(accountTotal, "USD").toFixed(2) }}
+            {{ toRUB(accountTotal, 'USD').toFixed(2) }}
           </div>
           <div class="info-item">
             <span class="currency currency--eur">€</span>
-            {{ toRUB(accountTotal, "EUR").toFixed(2) }}
+            {{ toRUB(accountTotal, 'EUR').toFixed(2) }}
           </div>
         </div>
         <div class="info-block rates">
@@ -48,32 +48,37 @@
           <h2>Рассчитать для суммы</h2>
           <input type="text" v-model="total" class="total" />
         </div>
+        <div class="info-block">
+          <h2>Не куплено</h2>
+          <div>
+            <span v-for="etf in unused" :key="etf">{{ etf }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="table">
         <table>
-          <col span="1" class="ticker" />
-          <col span="4" class="balance" />
-          <col span="3" class="count" />
-          <col span="2" class="buy" />
           <thead>
             <tr>
-              <th colspan="1"></th>
-              <th colspan="4">На балансе</th>
-              <th colspan="3">Расчет</th>
-              <th colspan="2">Докупить</th>
+              <th colspan="1" class="name"></th>
+              <th colspan="4" class="balance">На балансе</th>
+              <th colspan="3" class="count">Расчет</th>
+              <th colspan="2" class="buy">Докупить</th>
             </tr>
             <tr>
-              <th>Тикер</th>
-              <th>Лот.</th>
-              <th>Сред.</th>
-              <th>Прирост</th>
-              <th>Сумма</th>
-              <th>Цена</th>
-              <th>%</th>
-              <th>Лот.</th>
-              <th>Лот.</th>
-              <th>Стоимость</th>
+              <th class="name">Тикер</th>
+
+              <th class="balance">Лот.</th>
+              <th class="balance">Сред.</th>
+              <th class="balance">Сумма</th>
+              <th class="balance">Прирост</th>
+
+              <th class="count">Цена</th>
+              <th class="count">%</th>
+              <th class="count">Лот.</th>
+
+              <th class="buy">Лот.</th>
+              <th class="buy">Стоимость</th>
             </tr>
           </thead>
           <tbody>
@@ -117,85 +122,86 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-
-.info {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-
-  &-block {
-    padding: 10px;
-  }
-  h2 {
-    margin-bottom: 12px;
-  }
-
-  .total {
-    height: 36px;
-    padding: 5px;
-  }
-
-  &-item {
+<style lang="scss">
+.portfolio {
+  .info {
     display: flex;
-    align-items: center;
-    font-weight: bold;
-    margin-bottom: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
 
-    .currency {
-      margin-right: 12px;
+    &-block {
+      padding: 10px;
+    }
+    h2 {
+      margin-bottom: 12px;
+    }
+
+    .total {
+      height: 36px;
+      padding: 5px;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 8px;
+
+      .currency {
+        margin-right: 12px;
+      }
     }
   }
-}
-.table {
-  width: 100%;
-  overflow: auto;
-}
-table {
-  border-spacing: 0;
-  border-collapse: collapse;
+  .table {
+    width: 100%;
+    overflow: auto;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
 
-  tr:not(.no-composition):hover {
-    td {
-      background: rgb(25, 25, 78);
-      color: white;
-      cursor: pointer;
+    tr:not(.no-composition):hover {
+      td {
+        background: rgb(25, 25, 78);
+        color: white;
+        cursor: pointer;
+      }
     }
-  }
 
-  th {
-    padding: 5px 10px;
-  }
-
-  tfoot {
-    td {
+    th {
       padding: 5px 10px;
     }
-  }
 
-  thead,
-  tbody {
-    th:first-child,
-    td:first-child {
-      background: white;
-      position: sticky;
-      left: 0;
+    tfoot {
+      td {
+        padding: 5px 10px;
+      }
     }
-  }
 
-  .balance {
-    background: #faecee;
-  }
+    thead,
+    tbody {
+      th:first-child,
+      td:first-child {
+        background: white;
+        position: sticky;
+        left: 0;
+      }
+    }
 
-  .count {
-    background: #e3fef9;
+    .balance {
+      background: #faecee;
+    }
+
+    .count {
+      background: #e3fef9;
+    }
   }
 }
 </style>
 
 <script>
-import { PortfolioPosition } from "../../models/PortfolioPosition";
-import Position from "../Position/index.vue";
+import { PortfolioPosition } from './PortfolioPosition';
+import Position from './position.vue';
 import { url } from '../../config/api';
 
 export default {
@@ -207,7 +213,7 @@ export default {
       balance: {
         USD: 0,
         EUR: 0,
-        RUB: 0,
+        RUB: 0
       },
       loading: true,
       eur: 0,
@@ -217,8 +223,9 @@ export default {
       sum: {
         USD: 0,
         EUR: 0,
-        RUB: 0,
+        RUB: 0
       },
+      unused: []
     };
   },
   created() {
@@ -228,13 +235,17 @@ export default {
       this.getComposition(),
       this.getRates().then(() => {
         return this.getPortfolio();
-      }),
+      })
     ]).then(() => {
       let used = this.positions.map((p) => p.ticker);
+      let unused = [];
 
       Object.keys(this.composition).forEach((key) => {
         if (used.includes(key)) return;
+        unused.push(key);
       });
+
+      this.unused = unused;
       this.loading = false;
     });
   },
@@ -244,14 +255,14 @@ export default {
     },
     totalEUR() {
       return this.total / this.eur;
-    },
+    }
   },
   methods: {
     recalculate() {
       let sum = {
         RUB: 0,
         EUR: 0,
-        USD: 0,
+        USD: 0
       };
       this.positions.forEach((position) => {
         sum[position.currency] += position._toBuySum;
@@ -265,7 +276,7 @@ export default {
         .then((res) => res.json())
         .then((json) => {
           this.positions = json.portfolio.positions
-            .filter((p) => p.instrumentType == "Etf")
+            .filter((p) => p.instrumentType == 'Etf')
             .map((p) => new PortfolioPosition(p, url));
 
           let total = this.positions.reduce((total, position) => {
@@ -298,7 +309,7 @@ export default {
     },
     getRates() {
       return fetch(
-        "http://iss.moex.com/iss/statistics/engines/currency/markets/selt/rates.json?cbrf.columns=CBRF_USD_LAST,CBRF_EUR_LAST&iss.meta=off"
+        'http://iss.moex.com/iss/statistics/engines/currency/markets/selt/rates.json?cbrf.columns=CBRF_USD_LAST,CBRF_EUR_LAST&iss.meta=off'
       )
         .then((res) => res.json())
         .then((json) => {
@@ -308,19 +319,19 @@ export default {
         });
     },
     getRUB(value, currency) {
-      if (currency == "RUB") return value;
-      if (currency == "USD") return value * this.usd;
-      if (currency == "EUR") return value * this.eur;
+      if (currency == 'RUB') return value;
+      if (currency == 'USD') return value * this.usd;
+      if (currency == 'EUR') return value * this.eur;
     },
     toRUB(value, currency) {
-      if (currency == "RUB") return value;
-      if (currency == "USD") return value / this.usd;
-      if (currency == "EUR") return value / this.eur;
+      if (currency == 'RUB') return value;
+      if (currency == 'USD') return value / this.usd;
+      if (currency == 'EUR') return value / this.eur;
     },
     getTotal(currency) {
-      if (currency == "RUB") return this.total;
-      if (currency == "USD") return this.totalUSD;
-      if (currency == "EUR") return this.totalEUR;
+      if (currency == 'RUB') return this.total;
+      if (currency == 'USD') return this.totalUSD;
+      if (currency == 'EUR') return this.totalEUR;
     },
     update() {
       this.loading = true;
@@ -332,7 +343,7 @@ export default {
         .then(() => {
           this.loading = false;
         });
-    },
-  },
+    }
+  }
 };
 </script>
