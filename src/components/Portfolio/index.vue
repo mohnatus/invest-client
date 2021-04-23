@@ -288,13 +288,14 @@ export default {
         });
     },
     getComposition() {
-      return fetch(`${url}/composition`)
+      return fetch(`${url}/composition/percents`)
         .then((res) => res.json())
         .then((json) => {
-          this.composition = json.reduce((acc, item) => {
-            acc[item.ticker] = item.percent;
-            return acc;
-          }, {});
+          let composition = {};
+          Object.keys(json.percents).forEach((key) => {
+            composition[key] = json.percents[key];
+          });
+          this.composition = composition;
         });
     },
     getBalance() {

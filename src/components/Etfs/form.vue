@@ -213,6 +213,7 @@
 export default {
   data() {
     return {
+      id: null,
       mode: 'create',
       opened: false,
       ticker: '',
@@ -233,6 +234,7 @@ export default {
 
   methods: {
     reset() {
+      this.id = null;
       this.ticker = '';
       this.name = '';
       this.description = '';
@@ -248,6 +250,7 @@ export default {
     },
     onSubmit() {
       let data = {
+        id: this.id,
         ticker: this.ticker,
         name: this.name,
         description: this.description,
@@ -274,7 +277,9 @@ export default {
       this.reset();
     },
     open(data) {
+      console.log('open', data)
       if (data) {
+        this.id = data.id;
         this.mode = 'update';
         this.ticker = data.ticker;
         this.name = data.name;

@@ -566,14 +566,12 @@ export default {
     },
 
     getComposition() {
-      let data = localStorage.getItem('portfolio-composition');
-      return Promise.resolve(data);
+      return fetch(`${url}/composition`).then(res => res.json()).then(json => json.composition)
     },
 
     init() {
       let data = this.composition;
       if (data) {
-        data = JSON.parse(data);
         if (data.groups) {
           Object.keys(data.groups).forEach((key) => {
             this.groups[key] = data.groups[key] || 0;
@@ -629,12 +627,20 @@ export default {
         groups: this.groups,
         stocks: this.stocksGroups,
         bonds: this.bondsGroups,
-        actives: {}
+        actives: {},
+        percents: this.percents
       };
       this.etfs.forEach((e) => {
         data.actives[e.ticker] = e.active ? 1 : 0;
       });
-      localStorage.setItem('portfolio-composition', JSON.stringify(data));
+
+      fetch(`${url}/composition`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
   }
 };

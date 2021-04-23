@@ -53,7 +53,6 @@ export default {
         });
         console.log('Не описанные ETF', etfs);
       });
-
   },
   methods: {
     create() {
@@ -63,8 +62,8 @@ export default {
       this.$refs.form.open(etf);
     },
     remove(etf) {
-      fetch(`${url}/etfs/delete/${etf.ticker}`, {
-        method: 'GET',
+      fetch(`${url}/etfs/delete/${etf.id}`, {
+        method: 'GET'
       })
         .then((res) => res.json())
         .then((json) => {
@@ -85,7 +84,8 @@ export default {
         });
     },
     onUpdate(data) {
-      fetch(`${url}/etfs/update`, {
+      console.log('update', data);
+      fetch(`${url}/etfs/update/${data.id}`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
