@@ -292,8 +292,9 @@ export default {
         .then((res) => res.json())
         .then((json) => {
           let composition = {};
-          Object.keys(json.percents).forEach((key) => {
-            composition[key] = json.percents[key];
+          let percents = json.percents || {};
+          Object.keys(percents).forEach((key) => {
+            composition[key] = percents[key];
           });
           this.composition = composition;
         });
