@@ -3,11 +3,25 @@
     <div>
       <div class="etf" v-for="etf of etfs" :key="etf.ticker">
         <div class="etf-data">
-          <div>{{ etf.ticker }}</div>
+          <div>
+            <a v-if="etf.link" :href="etf.link">{{ etf.ticker }}</a>
+            <span v-else>{{ etf.ticker }}</span>
+          </div>
+          <div><b>{{ etf.name }}</b></div>
+          <div>{{ etf.description }}</div>
+          <div><i>{{ etf.manager }}</i></div>
+
+        </div>
+
+        <div class="etf-meta">
+          <div>{{ etf.currency.toUpperCase() }}</div>
+          <div>{{ etf.type }}</div>
+          <div>{{ etf.market }}</div>
         </div>
 
         <div class="etf-actions">
           <button @click="update(etf)">Изменить</button>
+          <br>
           <button @click="remove(etf)">Удалить</button>
         </div>
       </div>
@@ -23,7 +37,25 @@
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .etf {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    margin-bottom: 24px;
+
+    &-data {
+      flex-grow: 1;
+      padding: 10px;
+    }
+    &-meta {
+      padding: 10px;
+    }
+    &-actions {
+      padding: 10px;
+    }
+  }
+</style>
 
 <script>
 import { url } from '../../config/api';
