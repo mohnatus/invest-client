@@ -1,30 +1,98 @@
 <template>
   <div>
     <div>
-      <div class="etf" v-for="etf of etfs" :key="etf.ticker">
-        <div class="etf-data">
-          <div>
-            <a v-if="etf.link" :href="etf.link">{{ etf.ticker }}</a>
-            <span v-else>{{ etf.ticker }}</span>
-          </div>
-          <div><b>{{ etf.name }}</b></div>
-          <div>{{ etf.description }}</div>
-          <div><i>{{ etf.manager }}</i></div>
+      <button @click="create()">Добавить</button>
+    </div>
 
-        </div>
-
-        <div class="etf-meta">
-          <div>{{ etf.currency.toUpperCase() }}</div>
-          <div>{{ etf.type }}</div>
-          <div>{{ etf.market }}</div>
-        </div>
-
-        <div class="etf-actions">
-          <button @click="update(etf)">Изменить</button>
-          <br>
-          <button @click="remove(etf)">Удалить</button>
-        </div>
-      </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th width="20"></th>
+            <th align="left" width="60" @click="sort('ticker')">Тикер
+              <span v-if="order=='ticker' && !desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+              </span>
+              <span v-if="order=='ticker' && desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              </span>
+            </th>
+            <th align="left" width="100">Название</th>
+            <th align="left" width="100">Активы</th>
+            <th align="left" width="300">Описание</th>
+            <th align="left" width="120">УК</th>
+            <th align="left" width="120">Рынок</th>
+            <th width="40"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="etf of sortedEtfs"
+            :key="etf.ticker"
+            class="etf-row"
+            :class="'etf-row--' + etf.type"
+          >
+            <td>
+              <span
+                class="currency currency--rub"
+                title="Российский рубль"
+                v-if="etf.currency.toUpperCase() == 'RUB'"
+                >₽</span
+              >
+              <span
+                class="currency currency--eur"
+                title="Евро"
+                v-else-if="etf.currency.toUpperCase() == 'EUR'"
+                >€</span
+              >
+              <span
+                class="currency currency--usd"
+                title="Доллар США"
+                v-else-if="etf.currency.toUpperCase() == 'USD'"
+                >$</span
+              >
+            </td>
+            <td>
+              <b>
+                <a v-if="etf.link" :href="etf.link">{{ etf.ticker }}</a>
+                <span v-else>{{ etf.ticker }}</span>
+              </b>
+            </td>
+            <td>
+              <b>{{ etf.name }}</b>
+            </td>
+            <td>
+              <span v-if="etf.type == 'stocks'">Акции</span>
+              <span v-else-if="etf.type == 'bonds'">Облигации</span>
+              <span v-else-if="etf.type == 'mixed'">Смешанные</span>
+              <span v-else-if="etf.type == 'gold'">Драг. металлы</span>
+            </td>
+            <td>{{ etf.description }}</td>
+            <td>
+              <i>{{ etf.manager }}</i>
+            </td>
+            <td>
+              <span v-if="etf.market == 'global'">Глобал.</span>
+              <span v-else-if="etf.market == 'usa'">США</span>
+              <span v-else-if="etf.market == 'russia'">Россия</span>
+              <span v-else-if="etf.market == 'developed'">Развитые</span>
+              <span v-else-if="etf.market == 'emerging'">Развивающ.</span>
+              <span v-else-if="etf.market == 'gold'">Драг. металлы</span>
+            </td>
+            <td>
+              <div class="etf-actions">
+                <button @click="update(etf)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M7.127 22.562l-7.127 1.438 1.438-7.128 5.689 5.69zm1.414-1.414l11.228-11.225-5.69-5.692-11.227 11.227 5.689 5.69zm9.768-21.148l-2.816 2.817 5.691 5.691 2.816-2.819-5.691-5.689z"/></svg>
+                </button>
+                <br />
+                <button @click="remove(etf)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div>
@@ -38,23 +106,43 @@
 </template>
 
 <style lang="scss" scoped>
-  .etf {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    margin-bottom: 24px;
+.table-wrapper {
+  max-width: 100%;
+  overflow: auto;
+}
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+td,
+th {
+  padding: 2px 5px;
+}
+.etf-row {
+  &--stocks {
+    background: hsla(125, 100%, 50%, 0.1);
+  }
+  &--gold {
+    background: hsla(60, 100%, 50%, 0.1);
+  }
+  &--bonds {
+    background: hsla(0, 100%, 50%, 0.1);
+  }
+  &--mixed {
+    background: hsla(175, 100%, 50%, 0.1);
+  }
+}
+.etf {
 
-    &-data {
-      flex-grow: 1;
-      padding: 10px;
-    }
-    &-meta {
-      padding: 10px;
-    }
-    &-actions {
-      padding: 10px;
+  &-actions {
+    display: flex;
+    button {
+      margin: 0 4px;
+      padding: 5px;
+      font-size: 0;
     }
   }
+}
 </style>
 
 <script>
@@ -65,7 +153,9 @@ export default {
   components: { EtfForm },
   data() {
     return {
-      etfs: []
+      etfs: [],
+      order: 'ticker',
+      desc: false
     };
   },
   created() {
@@ -86,7 +176,32 @@ export default {
         console.log('Не описанные ETF', etfs);
       });
   },
+  computed: {
+    sortedEtfs() {
+      let etfs = [...this.etfs];
+
+      let order = this.order;
+      let desc = this.desc ? 1 : -1;
+
+      if (order == 'ticker') {
+        etfs.sort((a, b) => {
+          let diff = a.ticker > b.ticker ? -1 : 1;
+          return diff * desc;
+        })
+      }
+
+      return etfs;
+    }
+  },
   methods: {
+    sort(ord) {
+      if (ord == this.order) {
+        this.desc = !this.desc;
+      } else {
+        this.order = ord;
+        this.desc = false;
+      }
+    },
     create() {
       this.$refs.form.open(null);
     },
@@ -94,13 +209,15 @@ export default {
       this.$refs.form.open(etf);
     },
     remove(etf) {
-      fetch(`${url}/etfs/delete/${etf.id}`, {
-        method: 'GET'
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          this.etfs = json.etfs;
-        });
+      if (confirm('Подтвердить удаление')) {
+        fetch(`${url}/etfs/delete/${etf.id}`, {
+          method: 'GET'
+        })
+          .then((res) => res.json())
+          .then((json) => {
+            this.etfs = json.etfs;
+          });
+      }
     },
     onCreate(data) {
       fetch(`${url}/etfs/create`, {

@@ -2,6 +2,19 @@
   <div class="modal" v-if="opened">
     <div class="modal-mask" @click="close"></div>
     <div class="modal-content">
+      <button class="modal-close" type="button">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
+          />
+        </svg>
+      </button>
+
       <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col col-ticker">
@@ -111,6 +124,15 @@
                 />
                 <label for="etf-market-emerging">Развивающиеся</label>
               </div>
+              <div class="radio-group">
+                <input
+                  type="radio"
+                  value="gold"
+                  id="etf-market-gold"
+                  v-model="market"
+                />
+                <label for="etf-market-gold">Драг. металлы</label>
+              </div>
             </div>
           </div>
 
@@ -189,7 +211,7 @@
         <div class="row">
           <div class="col col-link">
             <div class="form-group">
-              <label class="form-label" for="etf-description">Ссылка </label>
+              <label class="form-label" for="etf-description">Ссылка</label>
               <input type="text" v-model="link" />
             </div>
           </div>
@@ -201,15 +223,19 @@
               <input type="text" v-model="manager" />
             </div>
             <div>
-              <button @click="manager='Альфа-капитал'" type="button">Альфа-капитал</button>
-              <br>
-              <button @click="manager='ВТБ'" type="button">ВТБ</button>
-              <br>
-              <button @click="manager='Сбер'" type="button">Сбер</button>
-              <br>
-              <button @click="manager='Тинькофф'" type="button">Тинькофф</button>
-              <br>
-              <button @click="manager='FinEx'" type="button">FinEx</button>
+              <button @click="manager = 'Альфа-капитал'" type="button">
+                Альфа-капитал
+              </button>
+              <br />
+              <button @click="manager = 'ВТБ'" type="button">ВТБ</button>
+              <br />
+              <button @click="manager = 'Сбер'" type="button">Сбер</button>
+              <br />
+              <button @click="manager = 'Тинькофф'" type="button">
+                Тинькофф
+              </button>
+              <br />
+              <button @click="manager = 'FinEx'" type="button">FinEx</button>
             </div>
           </div>
         </div>
@@ -296,8 +322,10 @@ textarea {
     cursor: pointer;
   }
   &-content {
+    position: relative;
     width: 100%;
     height: 100%;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,13 +334,16 @@ textarea {
     pointer-events: none;
   }
 
+  &-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
   form {
     width: 100%;
-    max-width: 600px;
+    height: 100%;
     padding: 40px;
     background: white;
-    border-radius: 12px;
-    pointer-events: auto;
   }
 }
 </style>
@@ -338,6 +369,12 @@ export default {
       },
       market: ''
     };
+  },
+
+  watch: {
+    opened(value) {
+      document.body.style.overflow = value ? 'hidden' : '';
+    }
   },
 
   methods: {
@@ -395,6 +432,7 @@ export default {
         this.type = data.type;
         this.market = data.market;
         this.link = data.link;
+        this.actives = data.actives;
       } else {
         this.mode = 'create';
       }
