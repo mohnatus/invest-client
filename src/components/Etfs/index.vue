@@ -8,8 +8,15 @@
       <table>
         <thead>
           <tr>
-            <th width="20"></th>
-            <th align="left" width="60" @click="sort('ticker')">Тикер
+            <th width="20"  @click="sort('currency')" class="sorted">
+              <span v-if="order=='currency' && !desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+              </span>
+              <span v-if="order=='currency' && desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              </span>
+            </th>
+            <th align="left" width="60" @click="sort('ticker')" class="sorted">Тикер
               <span v-if="order=='ticker' && !desc">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
               </span>
@@ -18,10 +25,31 @@
               </span>
             </th>
             <th align="left" width="100">Название</th>
-            <th align="left" width="100">Активы</th>
-            <th align="left" width="300">Описание</th>
-            <th align="left" width="120">УК</th>
-            <th align="left" width="120">Рынок</th>
+            <th align="left" width="100" @click="sort('actives')"  class="sorted">Активы
+              <span v-if="order=='actives' && !desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+              </span>
+              <span v-if="order=='actives' && desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              </span>
+            </th>
+            <th align="left" width="300" >Описание</th>
+            <th align="left" width="120"  @click="sort('manager')"  class="sorted">УК
+              <span v-if="order=='manager' && !desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+              </span>
+              <span v-if="order=='manager' && desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              </span>
+            </th>
+            <th align="left" width="120"  @click="sort('market')"  class="sorted">Рынок
+              <span v-if="order=='market' && !desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+              </span>
+              <span v-if="order=='market' && desc">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              </span>
+            </th>
             <th width="40"></th>
           </tr>
         </thead>
@@ -114,6 +142,15 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
 }
+th {
+  white-space: nowrap;
+  span {
+    margin-left: 5px;
+  }
+  &.sorted {
+    cursor: pointer;
+  }
+}
 td,
 th {
   padding: 2px 5px;
@@ -149,6 +186,22 @@ th {
 import { url } from '../../config/api';
 import EtfForm from './form.vue';
 
+const actives = {
+  stocks: 1, // акции
+  bonds: 3, // облигации
+  mixed: 4, // смешанные
+  gold: 2, // драг. металлы
+}
+
+const markets = {
+  global: 1,// Глобальный
+  usa: 6, // сша
+  russia: 5, // россия
+  developed: 4, // развитые
+  emerging: 3, // развивающиеся
+  gold: 2, // драг. металлы
+}
+
 export default {
   components: { EtfForm },
   data() {
@@ -181,11 +234,26 @@ export default {
       let etfs = [...this.etfs];
 
       let order = this.order;
-      let desc = this.desc ? 1 : -1;
+      let desc = this.desc ? -1 : 1;
 
       if (order == 'ticker') {
         etfs.sort((a, b) => {
-          let diff = a.ticker > b.ticker ? -1 : 1;
+          let diff = a.ticker < b.ticker ? -1 : 1;
+          return diff * desc;
+        })
+      } else if (order == 'actives') {
+        etfs.sort((a, b) => {
+          let diff = actives[a.type] < actives[b.type] ? -1 : 1;
+          return diff * desc;
+        })
+      } else if (order == 'market') {
+        etfs.sort((a, b) => {
+          let diff = markets[a.market] < markets[b.market] ? -1 : 1;
+          return diff * desc;
+        })
+      } else if (order == 'manager') {
+        etfs.sort((a, b) => {
+          let diff = a.manager.toUpperCase() < b.manager.toUpperCase() ? -1 : 1;
           return diff * desc;
         })
       }
