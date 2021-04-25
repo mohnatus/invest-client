@@ -8,46 +8,133 @@
       <table>
         <thead>
           <tr>
-            <th width="20"  @click="sort('currency')" class="sorted">
-              <span v-if="order=='currency' && !desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+            <th width="10"></th>
+            <th width="20" @click="sort('currency')" class="sorted">
+              <span v-if="order == 'currency' && !desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M0 21l12-18 12 18z" />
+                </svg>
               </span>
-              <span v-if="order=='currency' && desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              <span v-if="order == 'currency' && desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 3l-12 18-12-18z" />
+                </svg>
               </span>
             </th>
-            <th align="left" width="60" @click="sort('ticker')" class="sorted">Тикер
-              <span v-if="order=='ticker' && !desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+            <th align="left" width="60" @click="sort('ticker')" class="sorted">
+              Тикер
+              <span v-if="order == 'ticker' && !desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M0 21l12-18 12 18z" />
+                </svg>
               </span>
-              <span v-if="order=='ticker' && desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              <span v-if="order == 'ticker' && desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 3l-12 18-12-18z" />
+                </svg>
               </span>
             </th>
             <th align="left" width="100">Название</th>
-            <th align="left" width="100" @click="sort('actives')"  class="sorted">Активы
-              <span v-if="order=='actives' && !desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+
+            <th
+              align="left"
+              width="100"
+              @click="sort('actives')"
+              class="sorted"
+            >
+              Активы
+              <span v-if="order == 'actives' && !desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M0 21l12-18 12 18z" />
+                </svg>
               </span>
-              <span v-if="order=='actives' && desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              <span v-if="order == 'actives' && desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 3l-12 18-12-18z" />
+                </svg>
               </span>
             </th>
-            <th align="left" width="300" >Описание</th>
-            <th align="left" width="120"  @click="sort('manager')"  class="sorted">УК
-              <span v-if="order=='manager' && !desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+            <th align="left" width="300">Описание</th>
+            <th align="left" width="100">Аналитика</th>
+            <th
+              align="left"
+              width="120"
+              @click="sort('manager')"
+              class="sorted"
+            >
+              УК
+              <span v-if="order == 'manager' && !desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M0 21l12-18 12 18z" />
+                </svg>
               </span>
-              <span v-if="order=='manager' && desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              <span v-if="order == 'manager' && desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 3l-12 18-12-18z" />
+                </svg>
               </span>
             </th>
-            <th align="left" width="120"  @click="sort('market')"  class="sorted">Рынок
-              <span v-if="order=='market' && !desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 21l12-18 12 18z"/></svg>
+            <th align="left" width="120" @click="sort('market')" class="sorted">
+              Рынок
+              <span v-if="order == 'market' && !desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M0 21l12-18 12 18z" />
+                </svg>
               </span>
-              <span v-if="order=='market' && desc">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M24 3l-12 18-12-18z"/></svg>
+              <span v-if="order == 'market' && desc">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 3l-12 18-12-18z" />
+                </svg>
               </span>
             </th>
             <th width="40"></th>
@@ -55,11 +142,12 @@
         </thead>
         <tbody>
           <tr
-            v-for="etf of sortedEtfs"
+            v-for="(etf, index) of sortedEtfs"
             :key="etf.ticker"
             class="etf-row"
             :class="'etf-row--' + etf.type"
           >
+            <td>{{ index + 1 }}</td>
             <td>
               <span
                 class="currency currency--rub"
@@ -82,7 +170,9 @@
             </td>
             <td>
               <b>
-                <a v-if="etf.link" :href="etf.link">{{ etf.ticker }}</a>
+                <a target="_blank" v-if="etf.link" :href="etf.link">{{
+                  etf.ticker
+                }}</a>
                 <span v-else>{{ etf.ticker }}</span>
               </b>
             </td>
@@ -95,7 +185,19 @@
               <span v-else-if="etf.type == 'mixed'">Смешанные</span>
               <span v-else-if="etf.type == 'gold'">Драг. металлы</span>
             </td>
-            <td>{{ etf.description }}</td>
+            <td>
+              <div>{{ etf.description }}</div>
+
+              <div class="etf-tags" v-if="etf.tags">
+                <span v-for="tag of etf.tags" :key="tag">
+                #{{ tag }}
+              </span>
+              </div>
+              </td>
+            <td>
+              <a target="_blank" v-if="isins[etf.ticker]" :href="'https://rusetfs.com/etf/' + isins[etf.ticker]">
+              rusetfs.com/etf/{{ isins[etf.ticker] }}</a>
+            </td>
             <td>
               <i>{{ etf.manager }}</i>
             </td>
@@ -110,11 +212,29 @@
             <td>
               <div class="etf-actions">
                 <button @click="update(etf)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M7.127 22.562l-7.127 1.438 1.438-7.128 5.689 5.69zm1.414-1.414l11.228-11.225-5.69-5.692-11.227 11.227 5.689 5.69zm9.768-21.148l-2.816 2.817 5.691 5.691 2.816-2.819-5.691-5.689z"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M7.127 22.562l-7.127 1.438 1.438-7.128 5.689 5.69zm1.414-1.414l11.228-11.225-5.69-5.692-11.227 11.227 5.689 5.69zm9.768-21.148l-2.816 2.817 5.691 5.691 2.816-2.819-5.691-5.689z"
+                    />
+                  </svg>
                 </button>
                 <br />
                 <button @click="remove(etf)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
+                    />
+                  </svg>
                 </button>
               </div>
             </td>
@@ -128,7 +248,13 @@
     </div>
 
     <div class="form">
-      <EtfForm ref="form" @create="onCreate" @update="onUpdate"></EtfForm>
+      <EtfForm
+        ref="form"
+        @create="onCreate"
+        @update="onUpdate"
+        :managers="managers"
+        :tagsList="tagsList"
+      ></EtfForm>
     </div>
   </div>
 </template>
@@ -170,7 +296,6 @@ th {
   }
 }
 .etf {
-
   &-actions {
     display: flex;
     button {
@@ -178,6 +303,11 @@ th {
       padding: 5px;
       font-size: 0;
     }
+  }
+  &-tags {
+    color: #aaa;
+    margin-top: 8px;
+    font-size: 0.8em;
   }
 }
 </style>
@@ -190,23 +320,24 @@ const actives = {
   stocks: 1, // акции
   bonds: 3, // облигации
   mixed: 4, // смешанные
-  gold: 2, // драг. металлы
-}
+  gold: 2 // драг. металлы
+};
 
 const markets = {
-  global: 1,// Глобальный
+  global: 1, // Глобальный
   usa: 6, // сша
   russia: 5, // россия
   developed: 4, // развитые
   emerging: 3, // развивающиеся
-  gold: 2, // драг. металлы
-}
+  gold: 2 // драг. металлы
+};
 
 export default {
   components: { EtfForm },
   data() {
     return {
       etfs: [],
+      isins: {},
       order: 'ticker',
       desc: false
     };
@@ -223,13 +354,31 @@ export default {
     fetch(`${url}/tinkoff-etfs`)
       .then((response) => response.json())
       .then((json) => {
-        let etfs = json.etfs.instruments.filter(({ ticker }) => {
+        let etfs = json.etfs.instruments.filter(({ ticker, isin }) => {
+          this.$set(this.isins, ticker, isin)
           return !this.etfs.some((e) => e.ticker == ticker);
         });
         console.log('Не описанные ETF', etfs);
       });
   },
   computed: {
+    managers() {
+      let managers = new Set(this.etfs.map((etf) => etf.manager).filter(Boolean));
+      return [...managers];
+    },
+    tagsList() {
+      let tags = [];
+      this.etfs.forEach(e => {
+        if (e.tags) {
+          tags = [
+            ...tags,
+            ...e.tags
+          ];
+        }
+      });
+      tags = tags.map(t => t.trim());
+      return [...new Set(tags)];
+    },
     sortedEtfs() {
       let etfs = [...this.etfs];
 
@@ -240,22 +389,22 @@ export default {
         etfs.sort((a, b) => {
           let diff = a.ticker < b.ticker ? -1 : 1;
           return diff * desc;
-        })
+        });
       } else if (order == 'actives') {
         etfs.sort((a, b) => {
           let diff = actives[a.type] < actives[b.type] ? -1 : 1;
           return diff * desc;
-        })
+        });
       } else if (order == 'market') {
         etfs.sort((a, b) => {
           let diff = markets[a.market] < markets[b.market] ? -1 : 1;
           return diff * desc;
-        })
+        });
       } else if (order == 'manager') {
         etfs.sort((a, b) => {
           let diff = a.manager.toUpperCase() < b.manager.toUpperCase() ? -1 : 1;
           return diff * desc;
-        })
+        });
       }
 
       return etfs;

@@ -2,7 +2,7 @@
   <div class="modal" v-if="opened">
     <div class="modal-mask" @click="close"></div>
     <div class="modal-content">
-      <button class="modal-close" type="button">
+      <button class="modal-close" type="button" @click="close">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -27,6 +27,21 @@
             <div class="form-group">
               <label class="form-label" for="etf-name">Название фонда</label>
               <input type="text" v-model="name" />
+            </div>
+          </div>
+          <div class="col col-group">
+            <div class="form-group">
+              <label class="form-label" for="etf-group">Теги</label>
+
+              <div>
+                <div class="tag-group" v-for="t in tagsBoxes" :key="t">
+                  <input type="checkbox" name="tags[]" v-model="tags" :value="t" :id="'tag-' + t">
+                  <label :for="'tag-' +  t">{{ t }}</label>
+                </div>
+                <div class="tag-group">
+                  <input type="text" @keydown.enter.prevent="addTag($event)">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -211,8 +226,8 @@
         <div class="row">
           <div class="col col-link">
             <div class="form-group">
-              <label class="form-label" for="etf-description">Ссылка</label>
-              <input type="text" v-model="link" />
+              <label class="form-label" for="etf-link">Ссылка</label>
+              <input type="text" id="etf-link" v-model="link" />
             </div>
           </div>
           <div class="col col-manager">
@@ -222,20 +237,15 @@
               >
               <input type="text" v-model="manager" />
             </div>
-            <div>
-              <button @click="manager = 'Альфа-капитал'" type="button">
-                Альфа-капитал
+            <div class="list">
+              <button
+                type="button"
+                v-for="m of managers"
+                :key="m"
+                @click="manager = m"
+              >
+                {{ m }}
               </button>
-              <br />
-              <button @click="manager = 'ВТБ'" type="button">ВТБ</button>
-              <br />
-              <button @click="manager = 'Сбер'" type="button">Сбер</button>
-              <br />
-              <button @click="manager = 'Тинькофф'" type="button">
-                Тинькофф
-              </button>
-              <br />
-              <button @click="manager = 'FinEx'" type="button">FinEx</button>
             </div>
           </div>
         </div>
@@ -331,7 +341,6 @@ textarea {
     justify-content: center;
     position: relative;
     z-index: 2;
-    pointer-events: none;
   }
 
   &-close {
@@ -346,10 +355,19 @@ textarea {
     background: white;
   }
 }
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  button {
+    margin: 5px;
+  }
+}
 </style>
 
 <script>
+
 export default {
+  props: ['managers', 'tagsList'],
   data() {
     return {
       id: null,
@@ -357,6 +375,7 @@ export default {
       opened: false,
       ticker: '',
       name: '',
+      tags: [],
       description: '',
       currency: '',
       manager: '',
@@ -372,16 +391,33 @@ export default {
   },
 
   watch: {
+
     opened(value) {
       document.body.style.overflow = value ? 'hidden' : '';
     }
   },
 
+  computed: {
+   tagsBoxes() {
+      let tags = new Set([
+        ...this.tags,
+        ...this.tagsList
+      ]);
+      return [...tags];
+    },
+  },
+
   methods: {
+    addTag(event) {
+      let tag = event.target.value;
+      event.target.value = '';
+      this.tags.push(tag);
+    },
     reset() {
       this.id = null;
       this.ticker = '';
       this.name = '';
+      this.tags = [];
       this.description = '';
       this.currency = '';
       this.manager = '';
@@ -397,6 +433,7 @@ export default {
         id: this.id,
         ticker: this.ticker.toUpperCase(),
         name: this.name,
+        tags: this.tags,
         description: this.description,
         currency: this.currency,
         manager: this.manager,
@@ -426,6 +463,7 @@ export default {
         this.mode = 'update';
         this.ticker = data.ticker;
         this.name = data.name;
+        this.tags = data.tags || [];
         this.description = data.description;
         this.currency = data.currency;
         this.manager = data.manager;
