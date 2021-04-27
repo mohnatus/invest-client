@@ -236,6 +236,7 @@ import { ETF } from './etf';
 import Ticker from './ticker.vue';
 import Percents from './percents.vue';
 import Stocks from './stocks.vue';
+
 import { Chart } from 'highcharts-vue';
 import { url } from '../../config/api';
 
@@ -480,7 +481,7 @@ export default {
       (() => {
         let percent = this.groups.stocks;
         console.log(this.stocksGroups, this.items.stocks);
-        
+
         Object.keys(this.stocksGroups).forEach((key) => {
 
           let groupPercent = (this.stocksGroups[key] * percent) / 100;

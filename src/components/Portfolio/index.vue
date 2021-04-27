@@ -46,70 +46,84 @@
         </div>
         <div class="info-block">
           <h2>Рассчитать для суммы</h2>
-          <input type="text" v-model="total" class="total" />
-        </div>
-        <div class="info-block">
-          <h2>Не куплено</h2>
-          <div class="list">
-            <span v-for="etf in unused" :key="etf">{{ etf }}</span>
-          </div>
+          <input type="number" v-model="total" class="total" />
         </div>
       </div>
 
       <div class="table">
         <table>
+          <colgroup>
+            <col class="col-ticker" />
+            <col class="col-ticker" />
+          </colgroup>
+          <colgroup>
+            <col class="col-count" />
+            <col class="col-count" />
+            <col class="col-count" />
+            <col class="col-count" />
+            <col class="col-count" />
+          </colgroup>
+          <colgroup>
+            <col class="col-portfolio" />
+            <col class="col-portfolio" />
+            <col class="col-portfolio" />
+          </colgroup>
+          <colgroup>
+            <col class="col-buy" />
+            <col class="col-buy" />
+          </colgroup>
           <thead>
             <tr>
-              <th colspan="1" class="name"></th>
-              <th colspan="4" class="balance">На балансе</th>
-              <th colspan="3" class="count">Расчет</th>
-              <th colspan="2" class="buy">Докупить</th>
+              <th colspan="2"></th>
+              <th colspan="5">Расчет, в валюте актива</th>
+              <th colspan="3">Портфель</th>
+              <th colspan="2">Купить</th>
             </tr>
             <tr>
-              <th class="name">Тикер</th>
+              <th></th>
+              <th>Тикер</th>
 
-              <th class="balance">Лот.</th>
-              <th class="balance">Сред.</th>
-              <th class="balance">Сумма</th>
-              <th class="balance">Прирост</th>
+              <th>%</th>
+              <th>Сумма</th>
+              <th>Цена, тек.</th>
+              <th>Цена, закр.</th>
+              <th>Лот.</th>
 
-              <th class="count">Цена</th>
-              <th class="count">%</th>
-              <th class="count">Лот.</th>
+              <th>Лот.</th>
+              <th>Сред. цена</th>
+              <th>Сумма</th>
 
-              <th class="buy">Лот.</th>
-              <th class="buy">Стоимость</th>
+              <th>Лот.</th>
+              <th>Сумма</th>
             </tr>
           </thead>
           <tbody>
-            <template v-for="position in positions">
-              <Position
-                v-on:changeSum="
-                  position._toBuySum = $event.price;
-                  recalculate();
-                "
-                :position="position"
-                :key="position.figi"
-                :percent="composition[position.ticker] || 0"
-                :total="getTotal(position.currency)"
-              ></Position>
-            </template>
+            <Position
+              ref="position"
+              v-for="etf of etfs"
+              :key="etf.id"
+              :etf="etf"
+              :total="total"
+              :position="portfolio[etf.ticker]"
+              :rate="getRate(etf.currency)"
+              @recalculate="calculate"
+            ></Position>
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="8"></td>
+              <td colspan="10"></td>
               <td align="right">RUB</td>
-              <td align="right">{{ sum.RUB }}</td>
+              <td align="right">{{ sum.RUB.toFixed(2) }}</td>
             </tr>
             <tr>
-              <td colspan="8"></td>
+              <td colspan="10"></td>
               <td align="right">USD</td>
-              <td align="right">{{ sum.USD }}</td>
+              <td align="right">{{ sum.USD.toFixed(2) }}</td>
             </tr>
             <tr>
-              <td colspan="8"></td>
+              <td colspan="10"></td>
               <td align="right">EUR</td>
-              <td align="right">{{ sum.EUR }}</td>
+              <td align="right">{{ sum.EUR.toFixed(2) }}</td>
             </tr>
           </tfoot>
         </table>
@@ -140,9 +154,7 @@
 
       span {
         padding: 5px;
-
       }
-
     }
     h2 {
       margin-bottom: 12px;
@@ -200,20 +212,24 @@
       }
     }
 
-    .balance {
+    .col-portfolio {
       background: #faecee;
     }
 
-    .count {
+    .col-count {
       background: #e3fef9;
+    }
+
+    .col-buy {
+      background: #f9fee3;
     }
   }
 }
 </style>
 
 <script>
-import { PortfolioPosition } from './PortfolioPosition';
-import Position from './position.vue';
+// import { PortfolioPosition } from './PortfolioPosition';
+import Position from './item.vue';
 import { url } from '../../config/api';
 
 export default {
@@ -230,39 +246,49 @@ export default {
       loading: true,
       eur: 0,
       usd: 0,
-      positions: [],
-      composition: {},
+      etfs: [],
+      portfolio: {},
       sum: {
-        USD: 0,
+        RUB: 0,
         EUR: 0,
-        RUB: 0
+        USD: 0,
       },
-      unused: []
+
     };
   },
   created() {
     this.getBalance();
 
     Promise.all([
+      this.getEtfs(),
       this.getComposition(),
       this.getRates().then(() => {
         return this.getPortfolio();
       })
-    ]).then(() => {
-      let used = this.positions.map((p) => p.ticker);
-      let unused = [];
+    ]).then(([etfsList, percents, portfolioItems]) => {
+      let positions = portfolioItems.map((i) => i.ticker);
 
-      Object.keys(this.composition).forEach((key) => {
-        if (used.includes(key)) return;
-        if (this.composition[key] > 0) {
-          unused.push(key);
-          this.positions.push(new PortfolioPosition({
-            ticker: key
-          }))
-        }
+      this.etfs = etfsList
+        .map((e) => {
+          return {
+            ...e,
+            percent: percents[e.ticker]
+          };
+        })
+        .filter((e) => {
+          if (e.percent > 0) return true;
+          if (positions.includes(e.ticker)) return true;
+        });
+
+      portfolioItems.forEach((i) => {
+        this.portfolio[i.ticker] = i;
       });
 
-      this.unused = unused;
+      this.accountTotal = portfolioItems.reduce((sum, i) => {
+        let itemSum = i.balance * i.averagePositionPrice.value;
+        return sum + this.getRUB(itemSum, i.averagePositionPrice.currency);
+      }, 0);
+      this.total = Math.floor(this.accountTotal);
       this.loading = false;
     });
   },
@@ -275,46 +301,63 @@ export default {
     }
   },
   methods: {
-    recalculate() {
+    calculate() {
+      console.log('calculate')
       let sum = {
-        RUB: 0,
+        USD: 0,
         EUR: 0,
-        USD: 0
+        RUB: 0
       };
-      this.positions.forEach((position) => {
-        sum[position.currency] += position._toBuySum;
-      });
-      this.sum.RUB = sum.RUB;
-      this.sum.USD = sum.USD;
-      this.sum.EUR = sum.EUR;
+
+
+      if (this.$refs.position) {
+        this.$refs.position.forEach((p) => {
+          let itemSum = p.getSum();
+          let cur = p.etf.currency.toUpperCase();
+          sum[cur] += itemSum;
+        });
+      }
+
+      this.sum = sum;
+    },
+    getRate(currency) {
+      if (currency.toUpperCase() == 'RUB') return 1;
+      if (currency.toUpperCase() == 'USD') return this.usd;
+      if (currency.toUpperCase() == 'EUR') return this.eur;
+    },
+    getCountSum(etf) {
+      let total = this.total;
+      if (etf.currency == 'usd') total = this.totalUSD;
+      else if (etf.currency == 'eur') total = this.totalEUR;
+
+      if (etf.percent == 0) return '-';
+
+      return ((total * etf.percent) / 100).toFixed(2);
+    },
+
+    getEtfs() {
+      return fetch(`${url}/etfs`, {
+        method: 'GET'
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          return json.etfs;
+        });
     },
     getPortfolio() {
       return fetch(`${url}/portfolio`)
         .then((res) => res.json())
         .then((json) => {
-          this.positions = json.portfolio.positions
-            .filter((p) => p.instrumentType == 'Etf')
-            .map((p) => new PortfolioPosition(p, url));
-
-          let total = this.positions.reduce((total, position) => {
-            let sum = this.getRUB(position.sum, position.currency);
-            return total + sum;
-          }, 0);
-          this.accountTotal = total;
-          this.total = total;
+          return json.portfolio.positions.filter(
+            (p) => p.instrumentType == 'Etf'
+          );
         });
     },
     getComposition() {
       return fetch(`${url}/composition/percents`)
         .then((res) => res.json())
         .then((json) => {
-          let composition = {};
-          let percents = json.percents || {};
-          Object.keys(percents).forEach((key) => {
-
-            composition[key] = percents[key];
-          });
-          this.composition = composition;
+          return json.percents || {};
         });
     },
     getBalance() {
@@ -349,20 +392,19 @@ export default {
       if (currency == 'EUR') return value / this.eur;
     },
     getTotal(currency) {
-      if (currency == 'RUB') return this.total;
-      if (currency == 'USD') return this.totalUSD;
-      if (currency == 'EUR') return this.totalEUR;
+      if (currency.toUpperCase() == 'RUB') return this.total;
+      if (currency.toUpperCase() == 'USD') return this.totalUSD;
+      if (currency.toUpperCase() == 'EUR') return this.totalEUR;
     },
     update() {
-      this.loading = true;
-
-      this.getRates()
-        .then(() => {
-          return this.getPortfolio();
-        })
-        .then(() => {
-          this.loading = false;
-        });
+      // this.loading = true;
+      // this.getRates()
+      //   .then(() => {
+      //     return this.getPortfolio();
+      //   })
+      //   .then(() => {
+      //     this.loading = false;
+      //   });
     }
   }
 };

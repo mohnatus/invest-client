@@ -28,9 +28,8 @@
           </td>
           <td>
             <div style="display: flex">
-              <span style="margin-right: 8px;" class="currency" :class="'currency--' + etf.currency">
-                {{ etf.currencySymbol }}
-              </span>
+              <Currency style="margin-right: 8px" :currency="etf.currency"></Currency>
+
               <span>{{ etf.ticker }}</span>
             </div>
           </td>
@@ -67,8 +66,10 @@
 </style>
 
 <script>
+import Currency from '../Currency/index.vue';
 export default {
   props: ['etfs', 'percents'],
+  components: { Currency },
   computed: {
     total() {
       return Object.values(this.percents).reduce((acc, v) => acc + v, 0);
