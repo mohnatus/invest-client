@@ -50,7 +50,7 @@
         </div>
         <div class="info-block">
           <h2>Не куплено</h2>
-          <div>
+          <div class="list">
             <span v-for="etf in unused" :key="etf">{{ etf }}</span>
           </div>
         </div>
@@ -126,11 +126,23 @@
 .portfolio {
   .info {
     display: flex;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     margin-bottom: 16px;
 
     &-block {
       padding: 10px;
+    }
+
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 300px;
+
+      span {
+        padding: 5px;
+
+      }
+
     }
     h2 {
       margin-bottom: 12px;
@@ -242,7 +254,12 @@ export default {
 
       Object.keys(this.composition).forEach((key) => {
         if (used.includes(key)) return;
-        unused.push(key);
+        if (this.composition[key] > 0) {
+          unused.push(key);
+          this.positions.push(new PortfolioPosition({
+            ticker: key
+          }))
+        }
       });
 
       this.unused = unused;
@@ -294,6 +311,7 @@ export default {
           let composition = {};
           let percents = json.percents || {};
           Object.keys(percents).forEach((key) => {
+
             composition[key] = percents[key];
           });
           this.composition = composition;

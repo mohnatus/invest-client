@@ -3,10 +3,12 @@
     <table>
       <thead>
         <tr>
-          <th></th>
-          <th>Тикер</th>
-          <th></th>
-          <th>{{ total.toFixed(2) }}%</th>
+          <th width="20"></th>
+          <th width="100">Тикер</th>
+          <th width="150">Название</th>
+          <th width="100">УК</th>
+
+          <th width="30">{{ total.toFixed(2) }}%</th>
         </tr>
       </thead>
       <tbody>
@@ -24,12 +26,24 @@
               @change="etf.toggle()"
             />
           </td>
-          <td>{{ etf.ticker }}</td>
           <td>
-            <div class="currency" :class="'currency--' + etf.currency">
-              {{ etf.currencySymbol }}
+            <div style="display: flex">
+              <span style="margin-right: 8px;" class="currency" :class="'currency--' + etf.currency">
+                {{ etf.currencySymbol }}
+              </span>
+              <span>{{ etf.ticker }}</span>
             </div>
           </td>
+          <td>
+            {{ etf.name }}
+            <div>
+              <span v-for="tag in etf.tags" :key="tag">#{{ tag }}</span>
+            </div>
+          </td>
+          <td>
+            {{  etf.manager }}
+          </td>
+
           <td align="right">
             <span v-if="percents[etf.ticker]">
               {{ percents[etf.ticker].toFixed(2) }}

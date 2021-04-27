@@ -1,15 +1,9 @@
 export class ETF {
   constructor(data) {
-    this.ticker = data.ticker;
-    this.type = data.type;
-    this.currency = data.currency || '';
-
-    this.market = data.market;
-    this.region = data.region;
-    this.sector = data.sector;
-
-    this.markets = data.markets;
-    this.actives = data.actives;
+    console.log(data);
+    Object.keys(data).forEach(key => {
+      this[key] = data[key];
+    });
 
     this.active = data.active;
   }

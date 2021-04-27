@@ -2,7 +2,12 @@
   <div class="ticker" :class="{
     inactive: !etf.active
   }" @click="etf.toggle()">
-    {{ etf.ticker }}
+    <span>{{ etf.ticker }}</span>
+
+    <div class="ticker-bubble">
+      <div class="ticker-bubble__name"><b>{{ etf.name }}</b></div>
+      <div>{{ etf.manager }}</div>
+    </div>
   </div>
 </template>
 
@@ -16,11 +21,38 @@
   height: 32px;
   margin: 2px;
   font-size: 12px;
-  background: #eee;
+  background: rgba(238, 238, 238, 1);
   cursor: pointer;
+  position: relative;
 
   &.inactive {
-    opacity: 0.5;
+    background: rgba(238, 238, 238, 0.5);
+    span {
+      opacity: 0.5;
+    }
+  }
+
+  &-bubble {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    background: white;
+    padding: 5px;
+    border-radius: 4px;
+    transform: translate(-50%, -10px);
+    display: none;
+    box-shadow: 0 0 5px  rgba(0,0,0,0.1);
+
+    &__name {
+      white-space: nowrap;
+      margin-bottom: 4px;
+    }
+  }
+
+  &:hover {
+    .ticker-bubble {
+      display: block;
+    }
   }
 
 }

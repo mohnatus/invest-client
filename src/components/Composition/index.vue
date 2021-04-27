@@ -294,6 +294,7 @@ export default {
   components: { Ticker, highcharts: Chart, Percents, Stocks },
   data() {
     return {
+      tags: [],
       loading: true,
       etfs: [],
 
@@ -368,6 +369,7 @@ export default {
   },
 
   computed: {
+
     typesChartOptions() {
       let stockes = 0;
       let bonds = 0;
@@ -477,7 +479,10 @@ export default {
 
       (() => {
         let percent = this.groups.stocks;
+        console.log(this.stocksGroups, this.items.stocks);
+        
         Object.keys(this.stocksGroups).forEach((key) => {
+
           let groupPercent = (this.stocksGroups[key] * percent) / 100;
 
           if (!(key in this.items.stocks)) return;
@@ -606,6 +611,8 @@ export default {
       this.items.stocks.developed = this.getGroup('stocks', 'developed');
       this.items.stocks.emerging = this.getGroup('stocks', 'emerging');
       this.items.stocks.global = this.getGroup('stocks', 'global');
+
+      let tags = this.etfs;
 
       this.loading = false;
     },
