@@ -43,12 +43,18 @@
       <span class="yield" v-else>0</span>
     </td>
 
-    <td class="count" align="right">{{ position.currentPrice }}</td>
+    <td class="count" align="right">
+      {{ position.currentPrice.toFixed(3) }}
+      <br />
+      {{ position.lastPrice.toFixed(3) }}
+    </td>
     <td class="count" align="right">{{ percent }}%</td>
     <td class="count" align="right">{{ countedCount }}</td>
 
     <td class="buy" align="right">{{ diffCount }}</td>
-    <td class="buy" align="right">{{ diffPrice ? diffPrice.toFixed(2) : '-' }}</td>
+    <td class="buy" align="right">
+      {{ diffPrice ? diffPrice.toFixed(2) : '-' }}
+    </td>
   </tr>
 </template>
 
@@ -120,14 +126,10 @@ export default {
   props: ['position', 'percent', 'total'],
   computed: {
     countedCount() {
-      console.log(
-        'counter',
-        this.total,
-        this.percent,
-        this.position.currentPrice
-      );
       let countedSum = (this.total * this.percent) / 100;
-      return Math.floor(countedSum / this.position.currentPrice);
+      let price = this.position.currentPrice || this.position.lastPrice;
+      console.log('total', this.total);
+      return Math.floor(countedSum / price);
     },
     diffCount() {
       console.log('diff', this.countedCount, this.position.balance);
@@ -136,7 +138,9 @@ export default {
     diffPrice() {
       let price = null;
       if (this.diffCount > 0) {
-        price = this.diffCount * this.position.currentPrice;
+        price =
+          this.diffCount *
+          (this.position.currentPrice || this.position.lastPrice);
       }
       this.$emit('changeSum', { price });
       return price;
