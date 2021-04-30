@@ -5,6 +5,8 @@
       <router-link class="menu-item" to="/etfs">Список фондов</router-link>
       <router-link class="menu-item" to="/composition">Балансировка</router-link>
       <router-link class="menu-item" to="/portfolio">Портфель</router-link>
+
+      <router-link class="menu-item" to="/balance">Сбалансируй</router-link>
     </div>
 
     <router-view></router-view>
