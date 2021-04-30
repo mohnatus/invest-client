@@ -13,12 +13,28 @@
           class="type"
           data-type="stocks"
           :style="{ height: groups.stocks + '%' }"
-        ></div>
+        >
+          <div
+            class="type-item"
+            v-for="market in stocksGroups"
+            :key="market.id"
+            v-bind:data-item="market.id"
+            :style="{ height: stocks[market.id] + '%' }"
+          ></div>
+        </div>
         <div
           class="type"
           data-type="bonds"
           :style="{ height: groups.bonds + '%' }"
-        ></div>
+        >
+          <div
+            class="type-item"
+            v-for="market in bondsGroups"
+            :key="market.id"
+            v-bind:data-item="market.id"
+            :style="{ height: bonds[market.id] + '%' }"
+          ></div>
+        </div>
         <div
           class="type"
           data-type="gold"
@@ -78,25 +94,25 @@
               <tr data-type="mixed">
                 <td>Смешанные активы</td>
                 <td>
-                  <Counter v-model="groups.mixed" :max="maxMixed"></Counter>
+                  <Counter v-model="groups.mixed" :max="getGroupMax('mixed')"></Counter>
                 </td>
               </tr>
               <tr data-type="stocks">
                 <td>Акции</td>
                 <td>
-                  <Counter v-model="groups.stocks" :max="maxStocks"></Counter>
+                  <Counter v-model="groups.stocks" :max="getGroupMax('stocks')"></Counter>
                 </td>
               </tr>
               <tr data-type="bonds">
                 <td>Облигации</td>
                 <td>
-                  <Counter v-model="groups.bonds" :max="maxBonds"></Counter>
+                  <Counter v-model="groups.bonds" :max="getGroupMax('bonds')"></Counter>
                 </td>
               </tr>
               <tr data-type="gold">
                 <td>Драг. металлы</td>
                 <td>
-                  <Counter v-model="groups.gold" :max="maxGold"></Counter>
+                  <Counter v-model="groups.gold" :max="getGroupMax('gold')"></Counter>
                 </td>
               </tr>
             </tbody>
@@ -105,10 +121,11 @@
 
         <div v-if="view">
           <div class="active-section" v-bind:data-type="view">
-
             <div v-if="view == 'gold'">
               <div class="active-section__header">
-                <h2>Драг. металлы <small>({{ groups.gold }}%)</small></h2>
+                <h2>
+                  Драг. металлы <small>({{ groups.gold }}%)</small>
+                </h2>
               </div>
 
               <div class="active-section__description">
@@ -118,7 +135,7 @@
               <div class="active-section__content">
                 <div class="tickers">
                   <Ticker
-                    v-for="etf in etfsGold"
+                    v-for="etf in getGroup('gold')"
                     :key="etf.ticker"
                     :etf="etf"
                     :class="{
@@ -132,19 +149,22 @@
 
             <div v-else-if="view == 'mixed'">
               <div class="active-section__header">
-                <h2>Смешанные активы <small>({{ groups.mixed }}%)</small></h2>
+                <h2>
+                  Смешанные активы <small>({{ groups.mixed }}%)</small>
+                </h2>
               </div>
 
               <div class="active-section__description">
-                смешанные фонды включают в себя акции, облигации и золото. Для удобства они вынесены в отдельную группу.
-                <br>
+                смешанные фонды включают в себя акции, облигации и золото. Для
+                удобства они вынесены в отдельную группу.
+                <br />
                 Доля портфеля между выбранными фондами будет разделена поровну.
               </div>
 
               <div class="active-section__content">
                 <div class="tickers">
                   <Ticker
-                    v-for="etf in etfsMixed"
+                    v-for="etf in getGroup('mixed')"
                     :key="etf.ticker"
                     :etf="etf"
                     :class="{
@@ -156,6 +176,113 @@
               </div>
             </div>
 
+            <div v-else-if="view == 'bonds'">
+              <div class="active-section__header">
+                <h2>
+                  Облигации <small>({{ groups.bonds }}%)</small>
+                </h2>
+              </div>
+
+              <div class="active-section__description">
+                Распределите долю облигаций в портфеле между облигациями России
+                и США. Внутри групп доли между выбранными фондами будут
+                распределены поровну.
+              </div>
+
+              <table class="general-types">
+                <thead>
+                  <tr>
+                    <th>Рынок</th>
+                    <th>%</th>
+                    <th width="100%"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="market in bondsGroups" :key="market.id">
+                    <td>{{ market.name }}</td>
+                    <td>
+                      <Counter
+                        :value="bonds[market.id]"
+                        @input="
+                          bonds[market.id] = $event;
+                          recountBonds();
+                        "
+                        :max="getBondsMax(market.id)"
+                      ></Counter>
+                    </td>
+                    <td>
+                      <div class="tickers">
+                        <Ticker
+                          v-for="etf in getGroup('bonds').filter(
+                            (e) => e.market == market.id
+                          )"
+                          :key="etf.ticker"
+                          :etf="etf"
+                          :class="{
+                            active: actives[etf.ticker]
+                          }"
+                          @click="toggleEtf(etf)"
+                        ></Ticker>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div v-else-if="view == 'stocks'">
+              <div class="active-section__header">
+                <h2>
+                  Акции <small>({{ groups.stocks }}%)</small>
+                </h2>
+              </div>
+
+              <div class="active-section__description">
+                Распределите долю акций в портфеле между акциями разных рынков.
+                Внутри групп доли между выбранными фондами будут распределены
+                поровну.
+              </div>
+
+              <table class="general-types">
+                <thead>
+                  <tr>
+                    <th>Рынок</th>
+                    <th>%</th>
+                    <th width="100%"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="market in stocksGroups" :key="market.id">
+                    <td>{{ market.name }}</td>
+                    <td>
+                      <Counter
+                        :value="stocks[market.id]"
+                        @input="
+                          stocks[market.id] = $event;
+                          recountStocks();
+                        "
+                        :max="getStocksMax(market.id)"
+                      ></Counter>
+                    </td>
+                    <td>
+                      <div class="tickers">
+                        <Ticker
+                          v-for="etf in getGroup('stocks').filter(
+                            (e) => e.market == market.id
+                          )"
+                          :key="etf.ticker"
+                          :etf="etf"
+                          :class="{
+                            active: actives[etf.ticker]
+                          }"
+                          @click="toggleEtf(etf)"
+                        ></Ticker>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -164,7 +291,11 @@
         <h3>В портфеле</h3>
         <table v-bind:data-active="view">
           <tbody>
-            <tr v-for="etf in activeEtf" :key="etf.ticker" v-bind:data-type="etf.type">
+            <tr
+              v-for="etf in activeEtf"
+              :key="etf.ticker"
+              v-bind:data-type="etf.type"
+            >
               <td>{{ etf.ticker }}</td>
               <td align="right">{{ percents[etf.ticker].toFixed(3) }}</td>
             </tr>
@@ -175,7 +306,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wrapper {
   --mixed: #a28be8;
   --stocks: #53e3f1;
@@ -194,6 +325,7 @@
 .types {
   width: 80px;
   height: 300px;
+  flex-shrink: 0;
 
   display: flex;
   flex-direction: column;
@@ -204,6 +336,8 @@
     outline-offset: 1px;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
 
     &[data-type='mixed'] {
       --active-color: var(--mixed);
@@ -223,30 +357,64 @@
     }
   }
 
-  &[data-active="mixed"] {
+  .type-item {
+    display: none;
+  }
+
+  &[data-active='mixed'] {
     .type[data-type='mixed'] {
       z-index: 2;
       outline: 3px solid var(--mixed-dark);
+
+      .type-item {
+        display: block;
+      }
     }
   }
 
-  &[data-active="stocks"] {
+  &[data-active='stocks'] {
     .type[data-type='stocks'] {
       z-index: 2;
       outline: 3px solid var(--stocks-dark);
+
+      .type-item {
+        display: block;
+
+        &[data-item]:nth-of-type(odd) {
+          background: #8ecbf3;
+        }
+        &[data-item]:nth-of-type(even) {
+          background: #8888f3;
+        }
+      }
     }
   }
 
-  &[data-active="bonds"] {
+  &[data-active='bonds'] {
     .type[data-type='bonds'] {
       z-index: 2;
       outline: 3px solid var(--bonds-dark);
+
+      .type-item {
+        display: block;
+
+        &[data-item]:nth-of-type(odd) {
+          background: #4dc291;
+        }
+        &[data-item]:nth-of-type(even) {
+          background: #3d754e;
+        }
+      }
     }
   }
 
-  &[data-active="gold"] {
+  &[data-active='gold'] {
     .type[data-type='gold'] {
       outline: 3px solid var(--gold-dark);
+
+      .type-item {
+        display: block;
+      }
     }
   }
 }
@@ -345,6 +513,7 @@
 
 .tickers {
   display: flex;
+  flex-wrap: wrap;
 }
 .active-section {
   &[data-type='gold'] {
@@ -370,6 +539,10 @@
 
   .ticker.active {
     background: var(--active-color);
+
+    .ticker-name {
+      color: white;
+    }
   }
 }
 .portfolio-table {
@@ -377,29 +550,29 @@
     td {
       color: inherit;
     }
-    &[data-active="mixed"] {
-      [data-type="mixed"] {
+    &[data-active='mixed'] {
+      [data-type='mixed'] {
         background: var(--mixed-dark);
         color: white;
       }
     }
 
-    &[data-active="stocks"] {
-      [data-type="stocks"] {
+    &[data-active='stocks'] {
+      [data-type='stocks'] {
         background: var(--stocks-dark);
         color: white;
       }
     }
 
-    &[data-active="bonds"] {
-      [data-type="bonds"] {
+    &[data-active='bonds'] {
+      [data-type='bonds'] {
         background: var(--bonds-dark);
         color: white;
       }
     }
 
-    &[data-active="gold"] {
-      [data-type="gold"] {
+    &[data-active='gold'] {
+      [data-type='gold'] {
         background: var(--gold-dark);
         color: white;
       }
@@ -421,20 +594,61 @@ export default {
     this.getComposition().then((composition) => {
       let groups = composition.groups;
 
-      this.groups.mixed = parseFloat(groups.mixed);
-      this.groups.stocks = parseFloat(groups.stocks);
-      this.groups.bonds = parseFloat(groups.bonds);
-      this.groups.gold = parseFloat(groups.gold);
+      this.groups.mixed = parseInt(groups.mixed);
+      this.groups.stocks = parseInt(groups.stocks);
+      this.groups.bonds = parseInt(groups.bonds);
+      this.groups.gold = parseInt(groups.gold);
 
       this.actives = composition.actives;
       this.percents = composition.percents;
+
+      let bonds = composition.bonds;
+      let stocks = composition.stocks;
+
+      this.bonds.usa = parseInt(bonds.usa);
+      this.bonds.russia = parseInt(bonds.russia);
+
+      this.stocks.usa = parseInt(stocks.usa);
+      this.stocks.russia = parseInt(stocks.russia);
+      this.stocks.developed = parseInt(stocks.developed);
+      this.stocks.emerging = parseInt(stocks.emerging);
+      this.stocks.global = parseInt(stocks.global);
     });
   },
   data() {
     return {
+
+      stocksGroups: [
+        { id: 'russia', name: 'Россия' },
+        { id: 'usa', name: 'США' },
+        { id: 'developed', name: 'Развитые' },
+        { id: 'emerging', name: 'Развивающиеся' },
+        { id: 'global', name: 'Глобальный' },
+        { id: 'risk', name: 'Риск' }
+      ],
+
+      bondsGroups: [
+        { id: 'russia', name: 'Россия' },
+        { id: 'usa', name: 'США' }
+      ],
+
       etfs: [],
       actives: {},
       percents: {},
+
+      bonds: {
+        russia: 50,
+        usa: 50
+      },
+      stocks: {
+        global: 20,
+        usa: 20,
+        russia: 20,
+        developed: 20,
+        emerging: 20,
+        risk: 0,
+      },
+
       view: '',
       groups: {
         mixed: 10,
@@ -445,30 +659,37 @@ export default {
     };
   },
   computed: {
-    maxMixed() {
-      return 100 - this.groups.stocks - this.groups.bonds - this.groups.gold;
-    },
-    maxStocks() {
-      return 100 - this.groups.mixed - this.groups.bonds - this.groups.gold;
-    },
-    maxBonds() {
-      return 100 - this.groups.stocks - this.groups.mixed - this.groups.gold;
-    },
-    maxGold() {
-      return 100 - this.groups.stocks - this.groups.bonds - this.groups.mixed;
-    },
-    etfsGold() {
-      return this.etfs.filter((e) => e.type == 'gold');
-    },
-    etfsMixed() {
-      return this.etfs.filter((e) => e.type == 'mixed');
-    },
     activeEtf() {
-      return this.etfs.filter((e) => this.actives[e.ticker]);
-    },
-    activeGold() {}
+      return this.etfs.filter(
+        (e) => this.actives[e.ticker] && this.percents[e.ticker] > 0
+      );
+    }
   },
   methods: {
+    getGroupMax(group) {
+      let result = 100;
+      Object.keys(this.groups).forEach(key => {
+        if (key != group) result -= this.groups[key];
+      });
+      return result;
+    },
+    getGroup(group) {
+      return this.etfs.filter((e) => e.type == group);
+    },
+    getBondsMax(market) {
+      let result = 100;
+      Object.keys(this.bonds).forEach((key) => {
+        if (key != market) result -= this.bonds[key];
+      });
+      return result;
+    },
+    getStocksMax(market) {
+      let result = 100;
+      Object.keys(this.stocks).forEach((key) => {
+        if (key != market) result -= this.stocks[key];
+      });
+      return result;
+    },
     recountGold() {
       let etfs = this.etfs.filter((e) => e.type == 'gold');
       let activeEtfs = etfs.filter((e) => this.actives[e.ticker]);
@@ -499,6 +720,51 @@ export default {
         }
       });
     },
+    recountBonds() {
+      let etfs = this.etfs.filter((e) => e.type == 'bonds');
+      let bondsPercent = this.groups.bonds;
+
+      let recountGroup = (market) => {
+        let groupEtfs = etfs.filter((e) => e.market == market);
+        let activeEtfs = groupEtfs.filter((e) => this.actives[e.ticker]);
+        let count = activeEtfs.length;
+        let percent = (bondsPercent * this.bonds[market]) / 100;
+        groupEtfs.forEach((e) => {
+          if (this.actives[e.ticker]) {
+            this.percents[e.ticker] = percent / count;
+          } else {
+            this.percents[e.ticker] = 0;
+          }
+        });
+      };
+
+      recountGroup('russia');
+      recountGroup('usa');
+    },
+    recountStocks() {
+      let etfs = this.etfs.filter((e) => e.type == 'stocks');
+      let stocksPercent = this.groups.stocks;
+
+      let recountGroup = (market) => {
+        let groupEtfs = etfs.filter((e) => e.market == market);
+        let activeEtfs = groupEtfs.filter((e) => this.actives[e.ticker]);
+        let count = activeEtfs.length;
+        let percent = (stocksPercent * this.stocks[market]) / 100;
+        groupEtfs.forEach((e) => {
+          if (this.actives[e.ticker]) {
+            this.percents[e.ticker] = percent / count;
+          } else {
+            this.percents[e.ticker] = 0;
+          }
+        });
+      };
+
+      recountGroup('russia');
+      recountGroup('usa');
+      recountGroup('developed');
+      recountGroup('emerging');
+      recountGroup('global');
+    },
     toggleEtf(etf) {
       if (this.actives[etf.ticker]) {
         this.actives[etf.ticker] = 0;
@@ -508,6 +774,8 @@ export default {
 
       if (etf.type == 'gold') this.recountGold();
       if (etf.type == 'mixed') this.recountMixed();
+      if (etf.type == 'bonds') this.recountBonds();
+      if (etf.type == 'stocks') this.recountStocks();
     },
     getEtfs() {
       return fetch(`${url}/etfs`, {
