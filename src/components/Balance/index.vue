@@ -3,43 +3,49 @@
     <h1>Сбалансируй свой портфель ETF</h1>
 
     <div class="wrapper">
-      <div class="types" v-bind:data-active="view">
-        <div
-          class="type"
-          data-type="mixed"
-          :style="{ height: groups.mixed + '%' }"
-        ></div>
-        <div
-          class="type"
-          data-type="stocks"
-          :style="{ height: groups.stocks + '%' }"
-        >
+      <div>
+        <div class="types" v-bind:data-active="view">
           <div
-            class="type-item"
-            v-for="market in stocksGroups"
-            :key="market.id"
-            v-bind:data-item="market.id"
-            :style="{ height: stocks[market.id] + '%' }"
+            class="type"
+            data-type="mixed"
+            :style="{ height: groups.mixed + '%' }"
+          ></div>
+          <div
+            class="type"
+            data-type="stocks"
+            :style="{ height: groups.stocks + '%' }"
+          >
+            <div
+              class="type-item"
+              v-for="market in stocksGroups"
+              :key="market.id"
+              v-bind:data-item="market.id"
+              :style="{ height: stocks[market.id] + '%' }"
+            ></div>
+          </div>
+          <div
+            class="type"
+            data-type="bonds"
+            :style="{ height: groups.bonds + '%' }"
+          >
+            <div
+              class="type-item"
+              v-for="market in bondsGroups"
+              :key="market.id"
+              v-bind:data-item="market.id"
+              :style="{ height: bonds[market.id] + '%' }"
+            ></div>
+          </div>
+          <div
+            class="type"
+            data-type="gold"
+            :style="{ height: groups.gold + '%' }"
           ></div>
         </div>
-        <div
-          class="type"
-          data-type="bonds"
-          :style="{ height: groups.bonds + '%' }"
-        >
-          <div
-            class="type-item"
-            v-for="market in bondsGroups"
-            :key="market.id"
-            v-bind:data-item="market.id"
-            :style="{ height: bonds[market.id] + '%' }"
-          ></div>
-        </div>
-        <div
-          class="type"
-          data-type="gold"
-          :style="{ height: groups.gold + '%' }"
-        ></div>
+
+        <button @click="save" type="button" class='save'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M14 3h2.997v5h-2.997v-5zm9 1v20h-22v-24h17.997l4.003 4zm-17 5h12v-7h-12v7zm14 4h-16v9h16v-9z"/></svg>
+        </button>
       </div>
 
       <div class="settings">
@@ -94,25 +100,25 @@
               <tr data-type="mixed">
                 <td>Смешанные активы</td>
                 <td>
-                  <Counter v-model="groups.mixed" :max="getGroupMax('mixed')"></Counter>
+                  <Counter :value="groups.mixed" @input="groups.mixed = $event;recountMixed();" :max="getGroupMax('mixed')"></Counter>
                 </td>
               </tr>
               <tr data-type="stocks">
                 <td>Акции</td>
                 <td>
-                  <Counter v-model="groups.stocks" :max="getGroupMax('stocks')"></Counter>
+                  <Counter :value="groups.stocks" @input="groups.stocks = $event;recountStocks();" :max="getGroupMax('stocks')"></Counter>
                 </td>
               </tr>
               <tr data-type="bonds">
                 <td>Облигации</td>
                 <td>
-                  <Counter v-model="groups.bonds" :max="getGroupMax('bonds')"></Counter>
+                  <Counter :value="groups.bonds" @input="groups.bonds = $event;recountBonds();" :max="getGroupMax('bonds')"></Counter>
                 </td>
               </tr>
               <tr data-type="gold">
                 <td>Драг. металлы</td>
                 <td>
-                  <Counter v-model="groups.gold" :max="getGroupMax('gold')"></Counter>
+                  <Counter :value="groups.gold" @input="groups.gold = $event;recountGold();" :max="getGroupMax('gold')"></Counter>
                 </td>
               </tr>
             </tbody>
@@ -321,6 +327,19 @@
   display: flex;
   padding: 20px;
   width: 100%;
+}
+.save {
+  width: 80px;
+  height: 80px;
+  margin-top: 16px;
+  border-radius: 5px;
+  background: #6f44f3;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    fill: white;
+  }
 }
 .types {
   width: 80px;
@@ -624,7 +643,6 @@ export default {
         { id: 'developed', name: 'Развитые' },
         { id: 'emerging', name: 'Развивающиеся' },
         { id: 'global', name: 'Глобальный' },
-        { id: 'risk', name: 'Риск' }
       ],
 
       bondsGroups: [
@@ -637,24 +655,23 @@ export default {
       percents: {},
 
       bonds: {
-        russia: 50,
-        usa: 50
+        russia: 0,
+        usa: 0
       },
       stocks: {
-        global: 20,
-        usa: 20,
-        russia: 20,
-        developed: 20,
-        emerging: 20,
-        risk: 0,
+        global: 0,
+        usa: 0,
+        russia: 0,
+        developed: 0,
+        emerging: 0,
       },
 
       view: '',
       groups: {
-        mixed: 10,
-        stocks: 60,
-        bonds: 20,
-        gold: 10
+        mixed: 0,
+        stocks: 0,
+        bonds: 0,
+        gold: 0
       }
     };
   },
@@ -745,16 +762,19 @@ export default {
       let etfs = this.etfs.filter((e) => e.type == 'stocks');
       let stocksPercent = this.groups.stocks;
 
+
       let recountGroup = (market) => {
         let groupEtfs = etfs.filter((e) => e.market == market);
         let activeEtfs = groupEtfs.filter((e) => this.actives[e.ticker]);
         let count = activeEtfs.length;
         let percent = (stocksPercent * this.stocks[market]) / 100;
+        console.log('market', count, percent)
         groupEtfs.forEach((e) => {
           if (this.actives[e.ticker]) {
             this.percents[e.ticker] = percent / count;
           } else {
             this.percents[e.ticker] = 0;
+            this.actives[e.ticker] = 0;
           }
         });
       };
@@ -794,6 +814,23 @@ export default {
       return fetch(`${url}/composition`)
         .then((res) => res.json())
         .then((json) => json.composition);
+    },
+    save() {
+      let data = {
+        groups: this.groups,
+        stocks: this.stocks,
+        bonds: this.bonds,
+        actives: this.actives,
+        percents: this.percents
+      };
+
+      fetch(`${url}/composition`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
   }
 };
